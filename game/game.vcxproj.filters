@@ -220,5 +220,32 @@
     <Image Include="..\game4.10\Bitmaps\place2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\material\character\knight_stand1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\material\character\knight_stand2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\material\character\knight_stand3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\material\character\knight_stand4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\place2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\place2_1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Bitmaps\place2_1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Bitmaps\place2_2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Bitmaps\place2_3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

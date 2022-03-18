@@ -20,9 +20,13 @@ namespace game_framework {
 
 	void CGamemap::LoadBitmap()
 	{
-		char *filename[3] = { ".\\bitmaps\\place1.bmp",".\\bitmaps\\place2.bmp",".\\bitmaps\\place3.bmp" };
-		for (int i = 0; i < 3; i++) {	// 載入動畫(由4張圖形構成)
-			all[level][i].LoadBitmap(filename[i]);
+		char *filename[2][3] = { { ".\\bitmaps\\place1.bmp",".\\bitmaps\\place2.bmp",".\\bitmaps\\place3.bmp" },
+								 { ".\\bitmaps\\place2_1.bmp",".\\bitmaps\\place2_2.bmp",".\\bitmaps\\place2_3.bmp"} };
+		for (int i = 0; i < 2; i++) {	// 載入動畫(由4張圖形構成)
+			for (int j = 0; j < 3; j++) {
+				all[i][j].LoadBitmap(filename[i][j]);
+			}
+			
 		}
 
 		temp = &all[level][n];
