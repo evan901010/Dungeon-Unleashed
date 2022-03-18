@@ -298,7 +298,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	//
 	// 移動彈跳的球
 	//
-	bball.OnMove();
+	map.OnMove();
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
@@ -329,7 +329,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	help.LoadBitmap(IDB_HELP,RGB(255,255,255));				// 載入說明的圖形
 	corner.LoadBitmap(IDB_CORNER);							// 載入角落圖形
 	corner.ShowBitmap(background);							// 將corner貼到background
-	bball.LoadBitmap();										// 載入圖形
+	map.LoadBitmap();										// 載入圖形
 	hits_left.LoadBitmap();									
 	CAudio::Instance()->Load(AUDIO_DING,  "sounds\\ding.wav");	// 載入編號0的聲音ding.wav
 	CAudio::Instance()->Load(AUDIO_LAKE,  "sounds\\lake.mp3");	// 載入編號1的聲音lake.mp3
@@ -407,7 +407,7 @@ void CGameStateRun::OnShow()
 	//  貼上背景圖、撞擊數、球、擦子、彈跳的球
 	//
 	c_practice.OnShow();
-	bball.OnShow();						// 貼上彈跳的球
+	map.OnShow();						// 貼上彈跳的球
 	background.ShowBitmap();			// 貼上背景圖
 	help.ShowBitmap();					// 貼上說明圖
 	hits_left.ShowBitmap();

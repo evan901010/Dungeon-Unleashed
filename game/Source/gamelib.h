@@ -207,7 +207,7 @@ public:
 	int   Width();						// 取得圖形的寬度
 protected:
 	CRect    location;			// location of the bitmap
-	bool     isBitmapLoaded;	// whether a bitmap has been loaded
+	bool     isBitmapLoaded;	// whether a bitmap has been loadedAddBitmap
 	unsigned SurfaceID;			// the surface id of this bitmap
 };
 

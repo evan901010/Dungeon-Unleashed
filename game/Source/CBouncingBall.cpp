@@ -11,27 +11,33 @@ namespace game_framework {
 	// CBouncingBall: BouncingBall class
 	/////////////////////////////////////////////////////////////////////////////
 
-	CBouncingBall::CBouncingBall()
+	CGamemap::CGamemap()
 	{
 		x = 60; y = 10;				// y座標比地板高1點(站在地板上)
-		velocity = initial_velocity;
+		level = 0;
+		n = 0;
 	}
 
-	void CBouncingBall::LoadBitmap()
+	void CGamemap::LoadBitmap()
 	{
 		char *filename[3] = { ".\\bitmaps\\place1.bmp",".\\bitmaps\\place2.bmp",".\\bitmaps\\place3.bmp" };
-		for (int i = 0; i < 3; i++)	// 載入動畫(由4張圖形構成)
-			animation.AddBitmap(filename[i], RGB(0, 0, 0));
+		for (int i = 0; i < 3; i++) {	// 載入動畫(由4張圖形構成)
+			all[level][i].LoadBitmap(filename[i]);
+		}
+
+		temp = &all[level][n];
 	}
 
-	void CBouncingBall::OnMove()
+
+	void CGamemap::OnMove()
 	{
-		animation.OnMove();		// 執行一次animation.OnMove()，animation才會換圖
+		n++;
+		n %= 3;
+		temp = &all[level][n];
 	}
 
-	void CBouncingBall::OnShow()
+	void CGamemap::OnShow()
 	{
-		animation.SetTopLeft(x, y);
-		animation.OnShow();
+		(*temp).ShowBitmap();
 	}
 }
