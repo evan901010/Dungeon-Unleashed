@@ -25,14 +25,16 @@ namespace game_framework {
 		void SetMovingUp(bool flag);	// 設定是否正在往上移動
 		void SetXY(int nx, int ny);		// 設定擦子左上角座標
 	protected:
-		CAnimation run;		// 擦子的動畫
-		CAnimation stop;
+		CAnimation runr;
+		CAnimation runl;
+		CAnimation stopr;
+		CAnimation stopl;
 		int x, y;					// 擦子左上角座標
 		bool isMovingDown;			// 是否正在往下移動
 		bool isMovingLeft;			// 是否正在往左移動
 		bool isMovingRight;			// 是否正在往右移動
 		bool isMovingUp;			// 是否正在往上移動
-		int isrun;		//是否在跑動
+		int isrun,isstop;		//是否在跑動
 		int top, down, lift, right;
 	};
 }
