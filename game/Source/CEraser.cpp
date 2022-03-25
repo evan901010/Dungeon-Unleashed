@@ -49,12 +49,19 @@ namespace game_framework {
 	void CEraser::LoadBitmap()
 	{
 		char *filename[4] = { ".\\bitmaps\\knight_run1.bmp",".\\bitmaps\\knight_run2.bmp",".\\bitmaps\\knight_run3.bmp",".\\bitmaps\\knight_run4.bmp" };
+		char *filename2[4] = { ".\\bitmaps\\knight_stand1.bmp",".\\bitmaps\\knight_stand2.bmp",".\\bitmaps\\knight_stand3.bmp",".\\bitmaps\\knight_stand4.bmp" };
 		for (int i = 0; i < 4; i++) {
 			run.AddBitmap(filename[i], RGB(0, 0, 0));
 			
 		}
+<<<<<<< HEAD
 
 		stop.AddBitmap(filename[1], RGB(0, 0, 0));
+=======
+		for (int i = 0; i < 4; i++) {
+			stop.AddBitmap(filename2[i], RGB(255, 255, 255));
+		}
+>>>>>>> 7443350c29c81b304ae5a96b8de569512b9dd975
 	}
 
 	void CEraser::OnMove()
@@ -62,6 +69,7 @@ namespace game_framework {
 		const int STEP_SIZE = 2;
 		isrun = 0;
 		run.OnMove();
+		stop.OnMove();
 		if (isMovingLeft){
 			x -= STEP_SIZE;
 			isrun =  1;

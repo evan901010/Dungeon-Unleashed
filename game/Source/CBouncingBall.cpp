@@ -15,7 +15,7 @@ namespace game_framework {
 	{
 		x = 60; y = 10;				// y座標比地板高1點(站在地板上)
 		level = 0;
-		n = 0;
+		n = 1;
 	}
 
 	void CGamemap::LoadBitmap()
@@ -24,24 +24,19 @@ namespace game_framework {
 								 { ".\\bitmaps\\place2_1.bmp",".\\bitmaps\\place2_2.bmp",".\\bitmaps\\place2_3.bmp"} };
 		for (int i = 0; i < 2; i++) {	// 載入動畫(由4張圖形構成)
 			for (int j = 0; j < 3; j++) {
-				all[i][j].LoadBitmap(filename[i][j]);
-			}
-			
+				all[i].AddBitmap(filename[i][j]);
+			}	
 		}
-
-		temp = &all[level][n];
 	}
 
 
 	void CGamemap::OnMove()
 	{
-		n++;
-		n %= 3;
-		temp = &all[level][n];
+		all[n].OnMove();
 	}
 
 	void CGamemap::OnShow()
 	{
-		(*temp).ShowBitmap();
+		all[n].OnShow();
 	}
 }
