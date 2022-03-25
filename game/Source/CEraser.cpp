@@ -50,9 +50,11 @@ namespace game_framework {
 	{
 		char *filename[4] = { ".\\bitmaps\\knight_run1.bmp",".\\bitmaps\\knight_run2.bmp",".\\bitmaps\\knight_run3.bmp",".\\bitmaps\\knight_run4.bmp" };
 		for (int i = 0; i < 4; i++) {
-			run.AddBitmap(filename[i], RGB(255, 255, 255));
+			run.AddBitmap(filename[i], RGB(0, 0, 0));
+			
 		}
-		stop.AddBitmap(filename[1], RGB(255, 255, 255));
+
+		stop.AddBitmap(filename[1], RGB(0, 0, 0));
 	}
 
 	void CEraser::OnMove()

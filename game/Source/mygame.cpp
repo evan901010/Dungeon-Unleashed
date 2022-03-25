@@ -310,6 +310,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	//     等的不耐煩，遊戲會出現「Loading ...」，顯示Loading的進度。
 	//
 	ShowInitProgress(33);	// 接個前一個狀態的進度，此處進度視為33%
+	char *filename[4] = { ".\\bitmaps\\knight_run1.bmp",".\\bitmaps\\knight_run2.bmp",".\\bitmaps\\knight_run3.bmp",".\\bitmaps\\knight_run4.bmp" };
 	//
 	// 開始載入資料
 	//
