@@ -9,8 +9,7 @@ namespace game_framework {
 	public:
 		CGamemap();
 		void LoadBitmap();		// 載入圖形
-		CMovingBitmap all[2][3];   //全部地圖
-		CMovingBitmap *temp;     //要準備輸出的地圖
+		CAnimation all[2];   //全部地圖
 		void OnMove();			// 移動
 		void OnShow();			// 將圖形貼到畫面
 	private:
