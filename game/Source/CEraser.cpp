@@ -44,6 +44,8 @@ namespace game_framework {
 		y = Y_POS;
 		isMovingLeft = isMovingRight = isMovingUp = isMovingDown = false;
 		isrun = 0;
+		top = 60;
+		lift = 75;
 	}
 
 	void CEraser::LoadBitmap()
@@ -52,14 +54,17 @@ namespace game_framework {
 		char *filename2[4] = { ".\\bitmaps\\knight_stand1.bmp",".\\bitmaps\\knight_stand2.bmp",".\\bitmaps\\knight_stand3.bmp",".\\bitmaps\\knight_stand4.bmp" };
 		for (int i = 0; i < 4; i++) {
 			run.AddBitmap(filename[i], RGB(0, 0, 0));
+<<<<<<< HEAD
 			
+=======
+>>>>>>> fee80173471cbaa3521d89b01a2e17bbf441f1b4
 		}
 <<<<<<< HEAD
 
 		stop.AddBitmap(filename[1], RGB(0, 0, 0));
 =======
 		for (int i = 0; i < 4; i++) {
-			stop.AddBitmap(filename2[i], RGB(255, 255, 255));
+			stop.AddBitmap(filename2[i], RGB(0, 0, 0));
 		}
 >>>>>>> 7443350c29c81b304ae5a96b8de569512b9dd975
 	}
@@ -71,7 +76,9 @@ namespace game_framework {
 		run.OnMove();
 		stop.OnMove();
 		if (isMovingLeft){
-			x -= STEP_SIZE;
+			if (x > lift) {
+				x -= STEP_SIZE;
+			}
 			isrun =  1;
 		}
 			
@@ -81,7 +88,9 @@ namespace game_framework {
 		}
 			
 		if (isMovingUp) {
-			y -= STEP_SIZE;
+			if (y > top) {
+				y -= STEP_SIZE;
+			}
 			isrun = 1;
 		}
 			
@@ -89,7 +98,7 @@ namespace game_framework {
 			y += STEP_SIZE;
 			isrun = 1;
 		}
-			
+		
 	}
 
 	void CEraser::SetMovingDown(bool flag)

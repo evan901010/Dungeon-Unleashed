@@ -32,6 +32,7 @@ namespace game_framework {
 		bool isMovingLeft;			// 是否正在往左移動
 		bool isMovingRight;			// 是否正在往右移動
 		bool isMovingUp;			// 是否正在往上移動
-		bool isrun;		//是否在跑動
+		int isrun;		//是否在跑動
+		int top, down, lift, right;
 	};
 }
