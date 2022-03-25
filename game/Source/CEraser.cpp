@@ -28,12 +28,12 @@ namespace game_framework {
 
 	int CEraser::GetX2()
 	{
-		return x + animation.Width();
+		return x + run.Width();
 	}
 
 	int CEraser::GetY2()
 	{
-		return y + animation.Height();
+		return y + run.Height();
 	}
 
 	void CEraser::Initialize()
@@ -43,29 +43,43 @@ namespace game_framework {
 		x = X_POS;
 		y = Y_POS;
 		isMovingLeft = isMovingRight = isMovingUp = isMovingDown = false;
+		isrun = 0;
 	}
 
 	void CEraser::LoadBitmap()
 	{
-
-		animation.AddBitmap(IDB_ERASER1, RGB(255, 255, 255));
-		animation.AddBitmap(IDB_ERASER2, RGB(255, 255, 255));
-		animation.AddBitmap(IDB_ERASER3, RGB(255, 255, 255));
-		animation.AddBitmap(IDB_ERASER2, RGB(255, 255, 255));
+		char *filename[4] = { ".\\bitmaps\\knight_run1.bmp",".\\bitmaps\\knight_run2.bmp",".\\bitmaps\\knight_run3.bmp",".\\bitmaps\\knight_run4.bmp" };
+		for (int i = 0; i < 4; i++) {
+			run.AddBitmap(filename[i], RGB(255, 255, 255));
+		}
+		stop.AddBitmap(filename[1], RGB(255, 255, 255));
 	}
 
 	void CEraser::OnMove()
 	{
 		const int STEP_SIZE = 2;
-		animation.OnMove();
-		if (isMovingLeft)
+		isrun = 0;
+		run.OnMove();
+		if (isMovingLeft){
 			x -= STEP_SIZE;
-		if (isMovingRight)
+			isrun =  1;
+		}
+			
+		if (isMovingRight) {
 			x += STEP_SIZE;
-		if (isMovingUp)
+			isrun = 1;
+		}
+			
+		if (isMovingUp) {
 			y -= STEP_SIZE;
-		if (isMovingDown)
+			isrun = 1;
+		}
+			
+		if (isMovingDown) {
 			y += STEP_SIZE;
+			isrun = 1;
+		}
+			
 	}
 
 	void CEraser::SetMovingDown(bool flag)
@@ -95,7 +109,14 @@ namespace game_framework {
 
 	void CEraser::OnShow()
 	{
-		animation.SetTopLeft(x, y);
-		animation.OnShow();
+		run.SetTopLeft(x, y);
+		stop.SetTopLeft(x, y);
+		if (isrun) {
+			run.OnShow();
+		}
+		else {
+			stop.OnShow();
+		}
+		
 	}
 }
