@@ -57,6 +57,9 @@ namespace game_framework {
 		char *filename2[4] = { ".\\bitmaps\\knight_run01.bmp",".\\bitmaps\\knight_run02.bmp",".\\bitmaps\\knight_run03.bmp",".\\bitmaps\\knight_run04.bmp" };
 		char *filename3[4] = { ".\\bitmaps\\knight_stand1.bmp",".\\bitmaps\\knight_stand2.bmp",".\\bitmaps\\knight_stand3.bmp",".\\bitmaps\\knight_stand4.bmp" };
 		char *filename4[4] = { ".\\bitmaps\\knight_stand01.bmp",".\\bitmaps\\knight_stand02.bmp",".\\bitmaps\\knight_stand03.bmp",".\\bitmaps\\knight_stand04.bmp" };
+		char *filename5[1] = { ".\\bitmaps\\sword\\swordl.bmp" };
+		char *filename6[7] = { ".\\bitmaps\\sword\\swordl_ani1.bmp", ".\\bitmaps\\sword\\swordl_ani2.bmp", ".\\bitmaps\\sword\\swordl_ani3.bmp",
+							  ".\\bitmaps\\sword\\swordl_ani4.bmp", ".\\bitmaps\\sword\\swordl_ani5.bmp", ".\\bitmaps\\sword\\swordl_ani6.bmp", ".\\bitmaps\\sword\\swordl_ani7.bmp", };
 		for (int i = 0; i < 4; i++) {
 			runr.AddBitmap(filename[i], RGB(0, 0, 0));
 		}
@@ -69,6 +72,12 @@ namespace game_framework {
 		for (int i = 0; i < 4; i++) {
 			stopl.AddBitmap(filename4[i], RGB(0, 0, 0));
 		}
+
+		sword.AddBitmap(filename5[0], RGB(0, 0, 0));
+
+		for (int i = 0; i < 7; i++) {
+			attackl.AddBitmap(filename6[i], RGB(0, 0, 0));
+		}
 	}
 
 	void CEraser::OnMove()
@@ -79,6 +88,7 @@ namespace game_framework {
 		runl.OnMove();
 		stopr.OnMove();
 		stopl.OnMove();
+		attackl.OnMove();
 		isrun = 0;
 		if (isMovingLeft){
 			if (x > lift) {
@@ -86,6 +96,7 @@ namespace game_framework {
 			}
 			isrun =  2;
 			isstop = 2;
+
 		}	
 		else if (isMovingRight) {
 			if (x < right) {
@@ -140,17 +151,23 @@ namespace game_framework {
 		runl.SetTopLeft(x, y);
 		stopr.SetTopLeft(x, y);
 		stopl.SetTopLeft(x, y);
+		attackl.SetTopLeft(x-65, y-10);
+		//sword.OnShow();
 		if (isrun == 1) {
 			runr.OnShow();
+			attackl.OnShow();
 		}
 		if(isrun == 2) {
 			runl.OnShow();
+			attackl.OnShow();
 		}
 		if(isstop == 1){
 			stopr.OnShow();
+			attackl.OnShow();
 		}
 		if (isstop == 2) {
 			stopl.OnShow();
+			attackl.OnShow();
 		}
 		
 	}

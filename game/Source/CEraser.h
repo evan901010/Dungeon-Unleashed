@@ -24,11 +24,14 @@ namespace game_framework {
 		void SetMovingRight(bool flag); // 設定是否正在往右移動
 		void SetMovingUp(bool flag);	// 設定是否正在往上移動
 		void SetXY(int nx, int ny);		// 設定擦子左上角座標
+		
 	protected:
 		CAnimation runr;
 		CAnimation runl;
 		CAnimation stopr;
 		CAnimation stopl;
+		CAnimation sword;
+		CAnimation attackl;
 		int x, y;					// 擦子左上角座標
 		bool isMovingDown;			// 是否正在往下移動
 		bool isMovingLeft;			// 是否正在往左移動
