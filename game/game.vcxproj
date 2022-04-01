@@ -338,7 +338,6 @@
     <Image Include="RES\123.png" />
     <Image Include="res\bitmap10.bmp" />
     <Image Include="res\bitmap11.bmp" />
-    <Image Include="res\bitmap21.bmp" />
     <Image Include="res\bitmap3.bmp" />
     <Image Include="res\bitmap4.bmp" />
     <Image Include="res\bitmap5.bmp" />
