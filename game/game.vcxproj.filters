@@ -247,5 +247,8 @@
     <Image Include="Bitmaps\place2_3.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\bitmap21.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
