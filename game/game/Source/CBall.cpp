@@ -14,6 +14,8 @@ namespace game_framework {
 
 	CBall::CBall()
 	{
+		x1 = 300; y1 = 300;
+
 		is_alive = true;
 		x = y = dx = dy = index = delay_counter = 0;
 	}
@@ -24,13 +26,16 @@ namespace game_framework {
 		return HitRectangle(eraser->GetX1(), eraser->GetY1(),
 			eraser->GetX2(), eraser->GetY2());
 	}
-
+	bool CBall::HitCSword(CSword *sword)
+	{
+		return HitRectangle(sword->GetX1(), sword->GetY1(), sword->GetX2(), sword->GetY2());
+	}
 	bool CBall::HitRectangle(int tx1, int ty1, int tx2, int ty2)
 	{
 		int x1 = x + dx;				// 球的左上角x座標
 		int y1 = y + dy;				// 球的左上角y座標
-		int x2 = x1 + bmp.Width();	// 球的右下角x座標
-		int y2 = y1 + bmp.Height();	// 球的右下角y座標
+		int x2 = x1 + run.Width();	// 球的右下角x座標
+		int y2 = y1 + run.Height();	// 球的右下角y座標
 									//
 									// 檢測球的矩形與參數矩形是否有交集
 									//
@@ -44,12 +49,20 @@ namespace game_framework {
 
 	void CBall::LoadBitmap()
 	{
+		char *filename1[4] = { ".\\bitmaps\\enemy\\orc_run1.bmp",".\\bitmaps\\enemy\\orc_run2.bmp",".\\bitmaps\\enemy\\orc_run3.bmp", ".\\bitmaps\\enemy\\orc_run4.bmp" };
+
+		for (int i = 0; i < 4; i++) {	// 載入動畫(由4張圖形構成)
+			run.AddBitmap(filename1[i], RGB(0, 0, 0));
+			run.SetTopLeft(x1, y1);
+		}
 		bmp.LoadBitmap(IDB_BALL, RGB(0, 0, 0));			// 載入球的圖形
-		bmp_center.LoadBitmap(IDB_CENTER, RGB(0, 0, 0));	// 載入球圓心的圖形
+		//bmp_center.LoadBitmap(IDB_CENTER, RGB(0, 0, 0));	// 載入球圓心的圖形
 	}
 
 	void CBall::OnMove()
 	{
+		run.OnMove();
+
 		if (!is_alive)
 			return;
 		delay_counter--;
@@ -58,9 +71,9 @@ namespace game_framework {
 			//
 			// 計算球向對於圓心的位移量dx, dy
 			//
-			const int STEPS = 18;
-			static const int DIFFX[] = { 35, 32, 26, 17, 6, -6, -17, -26, -32, -34, -32, -26, -17, -6, 6, 17, 26, 32, };
-			static const int DIFFY[] = { 0, 11, 22, 30, 34, 34, 30, 22, 11, 0, -11, -22, -30, -34, -34, -30, -22, -11, };
+			const int STEPS = 3;
+			static const int DIFFX[] = { 0, 200, 400 };
+			static const int DIFFY[] = { 0, 200, 400 };
 			index++;
 			if (index >= STEPS)
 				index = 0;
@@ -86,11 +99,12 @@ namespace game_framework {
 
 	void CBall::OnShow()
 	{
+		
+
 		if (is_alive) {
-			bmp.SetTopLeft(x + dx, y + dy);
-			bmp.ShowBitmap();
-			bmp_center.SetTopLeft(x, y);
-			bmp_center.ShowBitmap();
+			run.SetTopLeft(x, y);
+			run.OnShow();
+
 		}
 	}
 }

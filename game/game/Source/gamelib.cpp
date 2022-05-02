@@ -266,7 +266,7 @@ void CInteger::LoadBitmap()
 	if (!isBmpLoaded) {
 		int d[11]={IDB_0,IDB_1,IDB_2,IDB_3,IDB_4,IDB_5,IDB_6,IDB_7,IDB_8,IDB_9,IDB_MINUS};
 		for (int i=0; i < 11; i++)
-			digit[i].LoadBitmap(d[i],RGB(255,255,255));
+			digit[i].LoadBitmap(d[i],RGB(0,0,0));
 		isBmpLoaded = true;
 	}
 }
@@ -284,26 +284,13 @@ void CInteger::SetTopLeft(int nx, int ny)		// 將動畫的左上角座標移至 (x,y)
 void CInteger::ShowBitmap()
 {
 	GAME_ASSERT(isBmpLoaded, "CInteger: 請先執行LoadBitmap，然後才能ShowBitmap");
-	int nx;		// 待顯示位數的 x 座標
-	int MSB;	// 最左邊(含符號)的位數的數值
-	if (n >= 0) {
-		MSB = n;
-		nx = x+digit[0].Width()*(NUMDIGITS-1);
-	} else {
-		MSB = -n;
-		nx = x+digit[0].Width()*NUMDIGITS;
-	}
-	for (int i=0; i < NUMDIGITS; i++) {
-		int d = MSB % 10;
-		MSB /= 10;
-		digit[d].SetTopLeft(nx, y);
-		digit[d].ShowBitmap();
-		nx -= digit[d].Width();
-	}
-	if (n < 0) { // 如果小於0，則顯示負號
-		digit[10].SetTopLeft(nx, y);
-		digit[10].ShowBitmap();
-	}
+
+
+	digit[n].SetTopLeft(0, y);
+	digit[n].ShowBitmap();
+
+	
+
 }
 
 /////////////////////////////////////////////////////////////////////////////

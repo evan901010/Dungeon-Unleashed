@@ -41,6 +41,7 @@
 #include "CEraser.h"
 #include "CBall.h"
 #include "CBouncingBall.h"
+#include "orc.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -115,8 +116,10 @@ namespace game_framework {
 		CBall			*ball;		// 球的陣列
 		CMovingBitmap	corner;		// 角落圖
 		CEraser			eraser;		// 拍子
+		CSword			sword;
 		CInteger		hits_left;	// 剩下的撞擊數
 		CGamemap   map;		// 反覆彈跳的球
+		orc orc;
 	};
 	
 	/////////////////////////////////////////////////////////////////////////////

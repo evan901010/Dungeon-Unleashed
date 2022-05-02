@@ -225,12 +225,12 @@ void CGameStateRun::OnBeginState()
 	const int BALL_GAP = 90;
 	const int BALL_XY_OFFSET = 45;
 	const int BALL_PER_ROW = 7;
-	const int HITS_LEFT = 10;
+	const int HITS_LEFT = 3;
 	const int HITS_LEFT_X = 590;
 	const int HITS_LEFT_Y = 0;
 	const int BACKGROUND_X = 60;
 	const int ANIMATION_SPEED = 15;
-	for (int i = 0; i < NUMBALLS; i++) {				// 設定球的起始座標
+	for (int i = 0; i < 3; i++) {				// 設定球的起始座標
 		int x_pos = i % BALL_PER_ROW;
 		int y_pos = i / BALL_PER_ROW;
 		ball[i].SetXY(x_pos * BALL_GAP + BALL_XY_OFFSET, y_pos * BALL_GAP + BALL_XY_OFFSET);
@@ -238,6 +238,7 @@ void CGameStateRun::OnBeginState()
 		ball[i].SetIsAlive(true);
 	}
 	eraser.Initialize();
+	sword.Initialize();
 	background.SetTopLeft(BACKGROUND_X,0);				// 設定背景的起始座標
 	help.SetTopLeft(0, SIZE_Y - help.Height());			// 設定說明圖的起始座標
 	hits_left.SetInteger(HITS_LEFT);					// 指定剩下的撞擊數
@@ -251,8 +252,8 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 {	
 	c_practice.OnMove();
 	if (picX <= SIZE_Y) {
-		picX += 5;
-		picY += 5;
+		picX += 1;
+		picY += 1;
 	}
 	else {
 		picX = picY = 0;
@@ -278,10 +279,15 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	// 移動擦子
 	//
 	eraser.OnMove();
+	sword.OnMove();
 	//
 	// 判斷擦子是否碰到球
 	//
-	for (i=0; i < NUMBALLS; i++)
+	for (i=0; i < NUMBALLS; i++){
+		if (ball[i].IsAlive() && ball[i].HitCSword(&sword)) {
+			ball[i].SetIsAlive(false);
+			CAudio::Instance()->Play(AUDIO_DING);
+		}
 		if (ball[i].IsAlive() && ball[i].HitEraser(&eraser)) {
 			ball[i].SetIsAlive(false);
 			CAudio::Instance()->Play(AUDIO_DING);
@@ -295,10 +301,13 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				GotoGameState(GAME_STATE_OVER);
 			}
 		}
+	}
+
 	//
 	// 移動彈跳的球
 	//
 	map.OnMove();
+	orc.OnMove();
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
@@ -317,6 +326,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	for (i = 0; i < NUMBALLS; i++)	
 		ball[i].LoadBitmap();								// 載入第i個球的圖形
 	eraser.LoadBitmap();
+	sword.LoadBitmap();
 	background.LoadBitmap(IDB_BACKGROUND);					// 載入背景的圖形
 	//
 	// 完成部分Loading動作，提高進度
@@ -330,6 +340,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	corner.LoadBitmap(IDB_CORNER);							// 載入角落圖形
 	corner.ShowBitmap(background);							// 將corner貼到background
 	map.LoadBitmap();										// 載入圖形
+	orc.LoadBitmap();
 	hits_left.LoadBitmap();									
 	CAudio::Instance()->Load(AUDIO_DING,  "sounds\\ding.wav");	// 載入編號0的聲音ding.wav
 	CAudio::Instance()->Load(AUDIO_LAKE,  "sounds\\lake.mp3");	// 載入編號1的聲音lake.mp3
@@ -373,12 +384,14 @@ void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // 處理滑鼠的動作
 {
-	eraser.SetMovingLeft(true);
+	eraser.SetClick(true);
+	sword.SetClick(true);
 }
 
 void CGameStateRun::OnLButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動作
 {
-	eraser.SetMovingLeft(false);
+	eraser.SetClick(false);
+	sword.SetClick(false);
 }
 
 void CGameStateRun::OnMouseMove(UINT nFlags, CPoint point)	// 處理滑鼠的動作
@@ -388,12 +401,14 @@ void CGameStateRun::OnMouseMove(UINT nFlags, CPoint point)	// 處理滑鼠的動作
 
 void CGameStateRun::OnRButtonDown(UINT nFlags, CPoint point)  // 處理滑鼠的動作
 {
-	eraser.SetMovingRight(true);
+	eraser.SetClick(true);
+	sword.SetClick(true);
 }
 
 void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動作
 {
-	eraser.SetMovingRight(false);
+	eraser.SetClick(false);
+	sword.SetClick(false);
 }
 
 void CGameStateRun::OnShow()
@@ -407,12 +422,16 @@ void CGameStateRun::OnShow()
 	//  貼上背景圖、撞擊數、球、擦子、彈跳的球
 	//
 	c_practice.OnShow();
-	map.OnShow();						// 貼上彈跳的球
+	map.OnShow();	// 貼上彈跳的球
+	orc.OnShow();
 	background.ShowBitmap();			// 貼上背景圖
 	help.ShowBitmap();					// 貼上說明圖
 	hits_left.ShowBitmap();
 	for (int i=0; i < NUMBALLS; i++)
 		ball[i].OnShow();				// 貼上第i號球
+	sword.SetXY(eraser.GetX1(), eraser.GetY1());
+	sword.Setisstop(eraser.Getstop());
+	sword.OnShow();
 	eraser.OnShow();					// 貼上擦子
 	practice.ShowBitmap();
 	//
@@ -422,5 +441,6 @@ void CGameStateRun::OnShow()
 	corner.ShowBitmap();
 	corner.SetTopLeft(SIZE_X-corner.Width(), SIZE_Y-corner.Height());
 	corner.ShowBitmap();
+	
 }
 }

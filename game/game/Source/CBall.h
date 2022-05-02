@@ -1,3 +1,5 @@
+#include "CSword.h"
+
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
 	// 這個class提供繞圈圈的球
@@ -9,7 +11,9 @@ namespace game_framework {
 	public:
 		CBall();
 		bool HitEraser(CEraser *eraser);						// 是否碰到擦子
-		bool IsAlive();											// 是否活著
+		bool HitCSword(CSword *sword);
+		bool IsAlive();		
+		CAnimation run;
 		void LoadBitmap();										// 載入圖形
 		void OnMove();											// 移動
 		void OnShow();											// 將圖形貼到畫面
@@ -20,6 +24,7 @@ namespace game_framework {
 		CMovingBitmap bmp;			// 球的圖
 		CMovingBitmap bmp_center;	// 圓心的圖			
 		int x, y;					// 圓心的座標
+		int x1, y1;
 		int dx, dy;					// 球距離圓心的位移量
 		int index;					// 球的「角度」，0-17表示0-360度
 		int delay_counter;			// 調整旋轉速度的計數器

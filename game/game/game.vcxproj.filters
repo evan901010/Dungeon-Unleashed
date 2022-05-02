@@ -129,6 +129,12 @@
     <ClCompile Include="Source\CBouncingBall.cpp">
       <Filter>MyGame</Filter>
     </ClCompile>
+    <ClCompile Include="Source\CSword.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\orc.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio.h">
@@ -165,6 +171,12 @@
       <Filter>MyGame</Filter>
     </ClInclude>
     <ClInclude Include="Source\CBouncingBall.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CSword.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\orc.h">
       <Filter>MyGame</Filter>
     </ClInclude>
   </ItemGroup>
@@ -245,6 +257,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Bitmaps\place2_3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\圖\BMP\bmp0.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\圖\BMP\bmp1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\圖\BMP\bmp2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\圖\BMP\bmp3.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
