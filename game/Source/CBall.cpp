@@ -14,12 +14,26 @@ namespace game_framework {
 
 	CBall::CBall()
 	{
-		x1 = 300; y1 = 300;
-
 		is_alive = true;
 		x = y = dx = dy = index = delay_counter = 0;
+		ittouch = 0;
 	}
-
+	int CBall::GetX1()
+	{
+		return x + dx;
+	}
+	int CBall::GetY1()
+	{
+		return y + dy;
+	}
+	int CBall::GetX2()
+	{
+		return x + run.Width();
+	}
+	int CBall::GetY2()
+	{
+		return y + run.Height();
+	}
 	bool CBall::HitEraser(CEraser *eraser)
 	{
 		// 檢測擦子所構成的矩形是否碰到球
@@ -30,8 +44,16 @@ namespace game_framework {
 	{
 		return HitRectangle(sword->GetX1(), sword->GetY1(), sword->GetX2(), sword->GetY2());
 	}
+	bool CBall::HitOthers(CBall *ball)
+	{
+		return HitRectangle(ball->GetX1(), ball->GetY1(), ball->GetX2(), ball->GetY2());
+	}
 	bool CBall::HitRectangle(int tx1, int ty1, int tx2, int ty2)
 	{
+		if (!is_alive) {
+			x = 0;
+			y = 0;
+		}
 		int x1 = x + dx;				// 球的左上角x座標
 		int y1 = y + dy;				// 球的左上角y座標
 		int x2 = x1 + run.Width();	// 球的右下角x座標
@@ -46,7 +68,11 @@ namespace game_framework {
 	{
 		return is_alive;
 	}
-
+	void CBall::getxy(int x2,int y2)
+	{
+		inx = x - x2;
+		iny = y - y2;
+	}
 	void CBall::LoadBitmap()
 	{
 		char *filename1[4] = { ".\\bitmaps\\enemy\\orc_run1.bmp",".\\bitmaps\\enemy\\orc_run2.bmp",".\\bitmaps\\enemy\\orc_run3.bmp", ".\\bitmaps\\enemy\\orc_run4.bmp" };
@@ -58,30 +84,56 @@ namespace game_framework {
 		bmp.LoadBitmap(IDB_BALL, RGB(0, 0, 0));			// 載入球的圖形
 		//bmp_center.LoadBitmap(IDB_CENTER, RGB(0, 0, 0));	// 載入球圓心的圖形
 	}
-
-	void CBall::OnMove()
+	void CBall::forward() 
 	{
-		run.OnMove();
-
-		if (!is_alive)
-			return;
-		delay_counter--;
-		if (delay_counter < 0) {
-			delay_counter = delay;
-			//
-			// 計算球向對於圓心的位移量dx, dy
-			//
-			const int STEPS = 3;
-			static const int DIFFX[] = { 0, 200, 400 };
-			static const int DIFFY[] = { 0, 200, 400 };
-			index++;
-			if (index >= STEPS)
-				index = 0;
-			dx = DIFFX[index];
-			dy = DIFFY[index];
+		if (inx < 0) {
+			x = x + 1;
+		}
+		else {
+			x = x - 1;
+		}
+		if (iny < 0) {
+			y = y + 1;
+		}
+		else {
+			y = y - 1;
 		}
 	}
-
+	void CBall::back() 
+	{
+		if (inx < 0) {
+			x = x - 5;
+		}
+		else {
+			x = x + 5;
+		}
+		if (iny < 0) {
+			y = y - 5;
+		}
+		else {
+			y = y + 5;
+		}
+		ittouch = 0;
+	}
+	void CBall::OnMove()
+	{		
+		run.OnMove();
+		if (!is_alive) {
+			return;
+		}
+		if (ittouch) {
+			back();
+		}
+		else {
+			forward();
+		}
+		
+		
+	}
+	void CBall::istach()
+	{
+		ittouch = 1;
+	}
 	void CBall::SetDelay(int d)
 	{
 		delay = d;
@@ -99,12 +151,9 @@ namespace game_framework {
 
 	void CBall::OnShow()
 	{
-		
-
 		if (is_alive) {
 			run.SetTopLeft(x, y);
 			run.OnShow();
-
 		}
 	}
 }

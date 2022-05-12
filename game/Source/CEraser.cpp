@@ -61,7 +61,6 @@ namespace game_framework {
 		char *filename2[4] = { ".\\bitmaps\\knight_run01.bmp",".\\bitmaps\\knight_run02.bmp",".\\bitmaps\\knight_run03.bmp",".\\bitmaps\\knight_run04.bmp" };
 		char *filename3[4] = { ".\\bitmaps\\knight_stand1.bmp",".\\bitmaps\\knight_stand2.bmp",".\\bitmaps\\knight_stand3.bmp",".\\bitmaps\\knight_stand4.bmp" };
 		char *filename4[4] = { ".\\bitmaps\\knight_stand01.bmp",".\\bitmaps\\knight_stand02.bmp",".\\bitmaps\\knight_stand03.bmp",".\\bitmaps\\knight_stand04.bmp" };
-		char *filename5[2] = { ".\\bitmaps\\sword\\swordl.bmp",".\\bitmaps\\sword\\swordr.bmp" };
 		for (int i = 0; i < 4; i++) {
 			runr.AddBitmap(filename[i], RGB(0, 0, 0));
 		}
@@ -74,8 +73,6 @@ namespace game_framework {
 		for (int i = 0; i < 4; i++) {
 			stopl.AddBitmap(filename4[i], RGB(0, 0, 0));
 		}
-		swordl.AddBitmap(filename5[0], RGB(0, 0, 0));
-		swordr.AddBitmap(filename5[1], RGB(0, 0, 0));
 	}
 
 	void CEraser::OnMove()
@@ -156,23 +153,6 @@ namespace game_framework {
 		runl.SetTopLeft(x, y);
 		stopr.SetTopLeft(x, y);
 		stopl.SetTopLeft(x, y);
-		swordl.SetTopLeft(x - 15, y - 10);
-		swordr.SetTopLeft(x + 40, y - 10);
-		if (isClick == false) {
-			if (isstop == 1 || isrun == 1) {
-				swordr.OnShow();
-			}
-			else if (isstop == 2 || isrun == 2) {
-				swordl.OnShow();
-			}
-		}
-		else {
-			if (n == 0) {
-				n = 70;
-				isClick = false;
-			}
-			n--;
-		}
 		if (isrun == 1) {
 			runr.OnShow();
 

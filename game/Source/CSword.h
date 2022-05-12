@@ -19,13 +19,16 @@ namespace game_framework {
 		void SetClick(bool flag);
 		void SetXY(int nx, int ny);		// 設定擦子左上角座標
 		void Setisstop(int nisstop);		// 設定擦子左上角座標
-
+		void wait();
 	protected:
 		CAnimation attackl;
 		CAnimation attackr;
+		CAnimation attackstopl;
+		CAnimation attackstopr;
 		int x, y;					// 擦子左上角座標
 		int attack1 ,attack2;
-		bool isClick;
+		int isClick;
 		int isstop;		
+		int time;
 	};
 }

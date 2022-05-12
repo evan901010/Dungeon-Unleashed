@@ -137,7 +137,7 @@ namespace game_framework {
 
 CAnimation::CAnimation(int count)
 {
-	delay_count = count;
+	delay_count = 5;
 	delay_counter = delay_count;
 	x = y = bmp_counter = 0;
 }
@@ -205,6 +205,7 @@ void CAnimation::Reset()
 
 void CAnimation::SetDelayCount(int dc)
 {
+	dc = 1;
 	GAME_ASSERT(dc > 0, "CAnimation: Delay count must be >= 1");
 	delay_count = dc;
 }

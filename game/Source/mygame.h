@@ -42,6 +42,7 @@
 #include "CBall.h"
 #include "CBouncingBall.h"
 #include "orc.h"
+#include "trap.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -51,7 +52,8 @@ namespace game_framework {
 	enum AUDIO_ID {				// 定義各種音效的編號
 		AUDIO_DING,				// 0
 		AUDIO_LAKE,				// 1
-		AUDIO_NTUT				// 2
+		AUDIO_NTUT,			// 2
+		AUDIO_SWORD_HIT		//3
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -118,6 +120,7 @@ namespace game_framework {
 		CEraser			eraser;		// 拍子
 		CSword			sword;
 		CInteger		hits_left;	// 剩下的撞擊數
+		Trap *trap;
 		CGamemap   map;		// 反覆彈跳的球
 		orc orc;
 	};

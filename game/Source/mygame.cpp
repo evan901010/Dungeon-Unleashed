@@ -209,41 +209,58 @@ void CGameStateOver::OnShow()
 /////////////////////////////////////////////////////////////////////////////
 
 CGameStateRun::CGameStateRun(CGame *g)
-: CGameState(g), NUMBALLS(28)
+: CGameState(g), NUMBALLS(10)
 {
 	picX = picY = 0;
 	ball = new CBall [NUMBALLS];
+	trap = new Trap[NUMBALLS];
 }
 
 CGameStateRun::~CGameStateRun()
 {
 	delete [] ball;
+	delete[] trap;
 }
 
 void CGameStateRun::OnBeginState()
 {
-	const int BALL_GAP = 90;
-	const int BALL_XY_OFFSET = 45;
-	const int BALL_PER_ROW = 7;
+	const int BALL_GAP = 70;
+	const int BALL_XY_OFFSET = 70;
+	const int BALL_PER_ROW = 3;
 	const int HITS_LEFT = 3;
 	const int HITS_LEFT_X = 590;
 	const int HITS_LEFT_Y = 0;
 	const int BACKGROUND_X = 60;
-	const int ANIMATION_SPEED = 15;
-	for (int i = 0; i < 3; i++) {				// 設定球的起始座標
+	const int ANIMATION_SPEED = 10;
+	for (int i = 0; i < 6; i++) {				// 設定球的起始座標
 		int x_pos = i % BALL_PER_ROW;
 		int y_pos = i / BALL_PER_ROW;
 		ball[i].SetXY(x_pos * BALL_GAP + BALL_XY_OFFSET, y_pos * BALL_GAP + BALL_XY_OFFSET);
 		ball[i].SetDelay(x_pos);
 		ball[i].SetIsAlive(true);
+
 	}
+	const int TRAP_GAP = 192;
+	const int TRAP_X_OFFSET = 204;
+	const int TRAP_Y_OFFSET = 214;
+	const int TRAP_PER_ROW = 3;
+
+	for (int i = 0; i < 2; i++) {
+		int x_pos = i % TRAP_PER_ROW;
+		int y_pos = i / TRAP_PER_ROW;
+		trap[i].SetXY(x_pos * TRAP_GAP + TRAP_X_OFFSET, y_pos * TRAP_GAP + TRAP_Y_OFFSET);
+		trap[i].SetDelay(x_pos);
+		trap[i].SetIsAlive(true);
+	}
+
+
 	eraser.Initialize();
 	sword.Initialize();
 	background.SetTopLeft(BACKGROUND_X,0);				// 設定背景的起始座標
 	help.SetTopLeft(0, SIZE_Y - help.Height());			// 設定說明圖的起始座標
 	hits_left.SetInteger(HITS_LEFT);					// 指定剩下的撞擊數
 	hits_left.SetTopLeft(HITS_LEFT_X,HITS_LEFT_Y);		// 指定剩下撞擊數的座標
-	CAudio::Instance()->Play(AUDIO_LAKE, true);			// 撥放 WAVE
+	//CAudio::Instance()->Play(AUDIO_LAKE, true);			// 撥放 WAVE
 	CAudio::Instance()->Play(AUDIO_DING, false);		// 撥放 WAVE
 	CAudio::Instance()->Play(AUDIO_NTUT, true);			// 撥放 MIDI
 }
@@ -266,27 +283,30 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	//
 	// 移動背景圖的座標
 	//
+
 	if (background.Top() > SIZE_Y)
 		background.SetTopLeft(60 ,-background.Height());
 	background.SetTopLeft(background.Left(),background.Top()+1);
 	//
 	// 移動球
 	//
-	int i;
-	for (i=0; i < NUMBALLS; i++)
-		ball[i].OnMove();
+	bool temp;
+	
+		
 	//
 	// 移動擦子
 	//
 	eraser.OnMove();
+	sword.Setisstop(eraser.Getstop());
 	sword.OnMove();
+
 	//
 	// 判斷擦子是否碰到球
 	//
-	for (i=0; i < NUMBALLS; i++){
+	for (int i=0; i < NUMBALLS; i++){
 		if (ball[i].IsAlive() && ball[i].HitCSword(&sword)) {
 			ball[i].SetIsAlive(false);
-			CAudio::Instance()->Play(AUDIO_DING);
+			CAudio::Instance()->Play(AUDIO_SWORD_HIT);
 		}
 		if (ball[i].IsAlive() && ball[i].HitEraser(&eraser)) {
 			ball[i].SetIsAlive(false);
@@ -303,11 +323,49 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 	}
 
+	for (int i = 0; i < 2; i++) {
+		if (trap[i].IsAlive() && trap[i].HitEraser(&eraser)) {
+			trap[i].SetIsAlive(false);
+			CAudio::Instance()->Play(AUDIO_DING);
+			hits_left.Add(-1);
+			//
+			// 若剩餘碰撞次數為0，則跳到Game Over狀態
+			//
+			if (hits_left.GetInteger() <= 0) {
+				CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
+				CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
+				GotoGameState(GAME_STATE_OVER);
+			}
+		}
+	}
+	sword.SetXY(eraser.GetX1(), eraser.GetY1());
+	
 	//
 	// 移動彈跳的球
 	//
+	for (int i = 0; i < NUMBALLS; i++) {
+		temp = 0;
+		for (int j = 0; j < NUMBALLS; j++) {
+			if (j != i) {
+				if (ball[i].HitOthers(&ball[j])) {
+					ball[i].istach();
+					temp = 1;
+					break;
+				}
+			}
+		}
+		if (temp == 0) {
+			ball[i].getxy(eraser.GetX1(), eraser.GetY1());
+		}
+		
+		ball[i].OnMove();
+		
+	}
 	map.OnMove();
 	orc.OnMove();
+	for (int i = 0; i < 2; i++) {
+		trap[i].OnMove();
+	}
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
@@ -323,8 +381,12 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	// 開始載入資料
 	//
 	int i;
-	for (i = 0; i < NUMBALLS; i++)	
-		ball[i].LoadBitmap();								// 載入第i個球的圖形
+	for (i = 0; i < NUMBALLS; i++) {
+		ball[i].LoadBitmap();
+		trap[i].LoadBitmap();
+	}
+									// 載入第i個球的圖形
+		
 	eraser.LoadBitmap();
 	sword.LoadBitmap();
 	background.LoadBitmap(IDB_BACKGROUND);					// 載入背景的圖形
@@ -344,7 +406,8 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	hits_left.LoadBitmap();									
 	CAudio::Instance()->Load(AUDIO_DING,  "sounds\\ding.wav");	// 載入編號0的聲音ding.wav
 	CAudio::Instance()->Load(AUDIO_LAKE,  "sounds\\lake.mp3");	// 載入編號1的聲音lake.mp3
-	CAudio::Instance()->Load(AUDIO_NTUT,  "sounds\\ntut.mid");	// 載入編號2的聲音ntut.mid
+	CAudio::Instance()->Load(AUDIO_NTUT,  "sounds\\ntut.mp3");	// 載入編號2的聲音ntut.mid
+	CAudio::Instance()->Load(AUDIO_SWORD_HIT, "sounds\\sword_hit.wav");	// 載入編號2的聲音ntut.mid
 	//
 	// 此OnInit動作會接到CGameStaterOver::OnInit()，所以進度還沒到100%
 	//
@@ -421,19 +484,27 @@ void CGameStateRun::OnShow()
 	//
 	//  貼上背景圖、撞擊數、球、擦子、彈跳的球
 	//
-	c_practice.OnShow();
+	//c_practice.OnShow();
 	map.OnShow();	// 貼上彈跳的球
-	orc.OnShow();
-	background.ShowBitmap();			// 貼上背景圖
-	help.ShowBitmap();					// 貼上說明圖
-	hits_left.ShowBitmap();
-	for (int i=0; i < NUMBALLS; i++)
+	//orc.OnShow();
+	//background.ShowBitmap();			// 貼上背景圖
+	//help.ShowBitmap();					// 貼上說明圖
+	
+
+	for (int i = 0; i < 2; i++) {
+		trap[i].OnShow();				// 貼上第i號球
+	}
+
+	for (int i = 0; i < NUMBALLS; i++) {
 		ball[i].OnShow();				// 貼上第i號球
-	sword.SetXY(eraser.GetX1(), eraser.GetY1());
-	sword.Setisstop(eraser.Getstop());
+	}
+
+	
+	hits_left.ShowBitmap();
+		
 	sword.OnShow();
 	eraser.OnShow();					// 貼上擦子
-	practice.ShowBitmap();
+	//practice.ShowBitmap();
 	//
 	//  貼上左上及右下角落的圖
 	//
@@ -441,6 +512,5 @@ void CGameStateRun::OnShow()
 	corner.ShowBitmap();
 	corner.SetTopLeft(SIZE_X-corner.Width(), SIZE_Y-corner.Height());
 	corner.ShowBitmap();
-	
 }
 }
