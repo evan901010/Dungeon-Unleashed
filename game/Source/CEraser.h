@@ -18,6 +18,7 @@ namespace game_framework {
 		void SetMovingLeft(bool flag);	// 設定是否正在往左移動
 		void SetMovingRight(bool flag); // 設定是否正在往右移動
 		void SetMovingUp(bool flag);	// 設定是否正在往上移動
+		void SetRoll(bool flag);
 		void SetXY(int nx, int ny);		// 設定擦子左上角座標
 		void SetClick(bool flag);
 		
@@ -33,6 +34,7 @@ namespace game_framework {
 		bool isMovingLeft;			// 是否正在往左移動
 		bool isMovingRight;			// 是否正在往右移動
 		bool isMovingUp;			// 是否正在往上移動
+		bool isRolling;
 		bool isClick;
 		int isrun,isstop;		//是否在跑動
 		int top, down, lift, right;

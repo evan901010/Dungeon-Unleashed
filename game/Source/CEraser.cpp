@@ -45,7 +45,7 @@ namespace game_framework {
 		const int Y_POS = 400;
 		x = X_POS;
 		y = Y_POS;
-		isMovingLeft = isMovingRight = isMovingUp = isMovingDown = isClick = false;
+		isMovingLeft = isMovingRight = isMovingUp = isMovingDown = isRolling = isClick = false;
 		isrun = 0;
 		top = 30;
 		lift = 70;
@@ -113,6 +113,10 @@ namespace game_framework {
 			}
 			isrun = isstop;
 		}
+		else if (isRolling) {
+			y = STEP_SIZE + 20;
+		}
+		isrun = isstop;
 
 	}
 
@@ -136,6 +140,11 @@ namespace game_framework {
 	void CEraser::SetMovingUp(bool flag)
 	{
 		isMovingUp = flag;
+	}
+
+	void CEraser::SetRoll(bool flag)
+	{
+		isRolling = flag;
 	}
 
 	void CEraser::SetXY(int nx, int ny)

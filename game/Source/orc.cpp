@@ -21,10 +21,13 @@ namespace game_framework {
 	void orc::LoadBitmap()
 	{
 		char *filename1[4] = { ".\\bitmaps\\enemy\\orc_run1.bmp",".\\bitmaps\\enemy\\orc_run2.bmp",".\\bitmaps\\enemy\\orc_run3.bmp", ".\\bitmaps\\enemy\\orc_run4.bmp" };
+		char *filename2[4] = { ".\\bitmaps\\enemy\\orc_run01.bmp",".\\bitmaps\\enemy\\orc_run02.bmp",".\\bitmaps\\enemy\\orc_run03.bmp", ".\\bitmaps\\enemy\\orc_run04.bmp" };
 								
 		for (int i = 0; i < 4; i++) {	// 載入動畫(由4張圖形構成)
-				run.AddBitmap(filename1[i], RGB(0, 0, 0));
-				run.SetTopLeft(x, y);
+				runr.AddBitmap(filename1[i], RGB(0, 0, 0));
+				runr.SetTopLeft(x, y);
+				runl.AddBitmap(filename2[i], RGB(0, 0, 0));
+				runl.SetTopLeft(x, y);
 			}
 			
 
@@ -33,12 +36,14 @@ namespace game_framework {
 
 	void orc::OnMove()
 	{
-		run.OnMove();
+		runr.OnMove();
+		runl.OnMove();
 		
 	}
 
 	void orc::OnShow()
 	{
-		run.OnShow();
+		runr.OnShow();
+		runl.OnShow();
 	}
 }

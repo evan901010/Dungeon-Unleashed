@@ -43,6 +43,7 @@
 #include "CBouncingBall.h"
 #include "orc.h"
 #include "trap.h"
+#include "Boss.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -89,6 +90,7 @@ namespace game_framework {
 	private:
 		CMovingBitmap pic;
 		int x, y;
+		
 	};
 	class CGameStateRun : public CGameState {
 	public:
@@ -120,9 +122,23 @@ namespace game_framework {
 		CEraser			eraser;		// 拍子
 		CSword			sword;
 		CInteger		hits_left;	// 剩下的撞擊數
+		CInteger        boss_blood ;
 		Trap *trap;
 		CGamemap   map;		// 反覆彈跳的球
 		orc orc;
+		Boss *boss;
+		CMovingBitmap boss_blood1;
+		CMovingBitmap boss_blood2;
+		CMovingBitmap boss_blood3;
+		CMovingBitmap boss_blood4;
+		CMovingBitmap boss_blood5;
+		CMovingBitmap boss_blood6;
+		CMovingBitmap boss_blood7;
+		CMovingBitmap boss_blood8;
+		CMovingBitmap boss_blood9;
+		CMovingBitmap boss_blood10;
+		CMovingBitmap boss_blood11;
+		CMovingBitmap boss_blood12;
 	};
 	
 	/////////////////////////////////////////////////////////////////////////////

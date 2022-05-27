@@ -1,3 +1,5 @@
+#pragma once
+
 #include "CSword.h"
 
 namespace game_framework {
@@ -6,21 +8,18 @@ namespace game_framework {
 	// 看懂就可以改寫成自己的程式了
 	/////////////////////////////////////////////////////////////////////////////
 
-	class CBall
+	class Boss
 	{
 	public:
-		CBall();
+		Boss();
 		bool HitEraser(CEraser *eraser);						// 是否碰到擦子
 		bool HitCSword(CSword *sword);
-		bool HitOthers(CBall *ball);
-		bool IsAlive();		
-		CAnimation runr;
-		CAnimation runl;
-		void LoadBitmap();		
-		void SetMovingDown(bool flag);	// 設定是否正在往下移動
-		void SetMovingLeft(bool flag);	// 設定是否正在往左移動
-		void SetMovingRight(bool flag); // 設定是否正在往右移動
-		void SetMovingUp(bool flag);	// 設定是否正在往上移動
+		bool HitOthers(Boss *ball);
+		bool IsAlive();
+		bool IsAttack();
+		CAnimation run;
+		CAnimation attack;
+		void LoadBitmap();										// 載入圖形
 		void OnMove();											// 移動
 		void OnShow();											// 將圖形貼到畫面
 		void SetXY(int nx, int ny);								// 設定圓心的座標
@@ -37,12 +36,7 @@ namespace game_framework {
 		bool ittouch;
 	protected:
 		CMovingBitmap bmp;			// 球的圖
-		CMovingBitmap bmp_center;	// 圓心的圖	
-		bool isMovingDown;			// 是否正在往下移動
-		bool isMovingLeft;			// 是否正在往左移動
-		bool isMovingRight;			// 是否正在往右移動
-		bool isMovingUp;			// 是否正在往上移動
-		int isrun;
+		CMovingBitmap bmp_center;	// 圓心的圖			
 		int x, y;					// 圓心的座標
 		int x1, y1;
 		int dx, dy;					// 球距離圓心的位移量

@@ -1023,7 +1023,8 @@ void CDDraw::GetClientRect(CRect &r)
 
 void CDDraw::Init(int sx, int sy)
 {
-	// set target screen size
+	// set target
+
 	size_x = sx, size_y = sy;
 	// init lpDD
 	LPDIRECTDRAW lpDD0;

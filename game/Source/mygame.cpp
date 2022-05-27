@@ -1,55 +1,3 @@
-/*
- * mygame.cpp: 本檔案儲遊戲本身的class的implementation
- * Copyright (C) 2002-2008 Woei-Kae Chen <wkc@csie.ntut.edu.tw>
- *
- * This file is part of game, a free game development framework for windows.
- *
- * game is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * game is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * History:
- *   2002-03-04 V3.1
- *          Add codes to demostrate the use of CMovingBitmap::ShowBitmap(CMovingBitmap &).
- *	 2004-03-02 V4.0
- *      1. Add CGameStateInit, CGameStateRun, and CGameStateOver to
- *         demonstrate the use of states.
- *      2. Demo the use of CInteger in CGameStateRun.
- *   2005-09-13
- *      Rewrite the codes for CBall and CEraser.
- *   2005-09-20 V4.2Beta1.
- *   2005-09-29 V4.2Beta2.
- *      1. Add codes to display IDC_GAMECURSOR in GameStateRun.
- *   2006-02-08 V4.2
- *      1. Revise sample screens to display in English only.
- *      2. Add code in CGameStateInit to demo the use of PostQuitMessage().
- *      3. Rename OnInitialUpdate() -> OnInit().
- *      4. Fix the bug that OnBeginState() of GameStateInit is not called.
- *      5. Replace AUDIO_CANYON as AUDIO_NTUT.
- *      6. Add help bitmap to CGameStateRun.
- *   2006-09-09 V4.3
- *      1. Rename Move() and Show() as OnMove and OnShow() to emphasize that they are
- *         event driven.
- *   2006-12-30
- *      1. Bug fix: fix a memory leak problem by replacing PostQuitMessage(0) as
- *         PostMessage(AfxGetMainWnd()->m_hWnd, WM_CLOSE,0,0).
- *   2008-02-15 V4.4
- *      1. Add namespace game_framework.
- *      2. Replace the demonstration of animation as a new bouncing ball.
- *      3. Use ShowInitProgress(percent) to display loading progress.
- *   2010-03-23 V4.6
- *      1. Demo MP3 support: use lake.mp3 to replace lake.wav.
-*/
 
 #include "stdafx.h"
 #include "Resource.h"
@@ -214,12 +162,14 @@ CGameStateRun::CGameStateRun(CGame *g)
 	picX = picY = 0;
 	ball = new CBall [NUMBALLS];
 	trap = new Trap[NUMBALLS];
+	boss = new Boss[NUMBALLS];
 }
 
 CGameStateRun::~CGameStateRun()
 {
 	delete [] ball;
 	delete[] trap;
+	delete[] boss;
 }
 
 void CGameStateRun::OnBeginState()
@@ -240,6 +190,22 @@ void CGameStateRun::OnBeginState()
 		ball[i].SetIsAlive(true);
 
 	}
+	const int BOSS_HITS_LEFT = 12;
+	const int BOSS_HITS_LEFT_X = 590;
+	const int BOSS_HITS_LEFT_Y = 0;
+	const int BOSS_X_OFFSET = 300;
+	const int BOSS_Y_OFFSET = 100;
+	boss_blood.SetInteger(BOSS_HITS_LEFT);
+
+	for (int i = 0; i < 1; i++) {				// 設定球的起始座標
+		int x_pos = i % BALL_PER_ROW;
+		int y_pos = i / BALL_PER_ROW;
+		boss[i].SetXY(x_pos * BALL_GAP + BOSS_X_OFFSET, y_pos * BALL_GAP + BOSS_Y_OFFSET);
+		boss[i].SetDelay(x_pos);
+		boss[i].SetIsAlive(true);
+
+	}
+
 	const int TRAP_GAP = 192;
 	const int TRAP_X_OFFSET = 204;
 	const int TRAP_Y_OFFSET = 214;
@@ -261,12 +227,25 @@ void CGameStateRun::OnBeginState()
 	hits_left.SetInteger(HITS_LEFT);					// 指定剩下的撞擊數
 	hits_left.SetTopLeft(HITS_LEFT_X,HITS_LEFT_Y);		// 指定剩下撞擊數的座標
 	//CAudio::Instance()->Play(AUDIO_LAKE, true);			// 撥放 WAVE
-	CAudio::Instance()->Play(AUDIO_DING, false);		// 撥放 WAVE
+	//CAudio::Instance()->Play(AUDIO_DING, false);		// 撥放 WAVE
 	CAudio::Instance()->Play(AUDIO_NTUT, true);			// 撥放 MIDI
 }
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {	
+	boss_blood1.SetTopLeft(100, 550);
+	boss_blood2.SetTopLeft(100, 550);
+	boss_blood3.SetTopLeft(100, 550);
+	boss_blood4.SetTopLeft(100, 550);
+	boss_blood5.SetTopLeft(100, 550);
+	boss_blood6.SetTopLeft(100, 550);
+	boss_blood7.SetTopLeft(100, 550);
+	boss_blood8.SetTopLeft(100, 550);
+	boss_blood9.SetTopLeft(100, 550);
+	boss_blood10.SetTopLeft(100, 550);
+	boss_blood11.SetTopLeft(100, 550);
+	boss_blood12.SetTopLeft(100, 550);
+
 	c_practice.OnMove();
 	if (picX <= SIZE_Y) {
 		picX += 1;
@@ -307,6 +286,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		if (ball[i].IsAlive() && ball[i].HitCSword(&sword)) {
 			ball[i].SetIsAlive(false);
 			CAudio::Instance()->Play(AUDIO_SWORD_HIT);
+
 		}
 		if (ball[i].IsAlive() && ball[i].HitEraser(&eraser)) {
 			ball[i].SetIsAlive(false);
@@ -322,6 +302,41 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			}
 		}
 	}
+
+	
+
+	int x_pos = 1;
+	int y_pos = 1;
+					// 指定剩下的撞擊數
+	for (int i = 0; i < 1; i++) {
+
+		if (boss[i].IsAlive() && boss[i].HitCSword(&sword)) {
+			boss[i].SetIsAlive(true);
+			CAudio::Instance()->Play(AUDIO_SWORD_HIT);
+			boss[i].SetXY(100, 100);
+			boss_blood.Add(-1);
+			if (boss_blood.GetInteger() <= 0) {
+				boss[i].SetIsAlive(false);
+			}
+		}
+		if (boss[i].IsAlive() && boss[i].HitEraser(&eraser)) {
+			boss[i].SetIsAlive(true);
+			CAudio::Instance()->Play(AUDIO_DING);
+			hits_left.Add(-1);
+			boss[i].SetXY(100, 100);
+			
+			
+			//
+			// 若剩餘碰撞次數為0，則跳到Game Over狀態
+			//
+			if (hits_left.GetInteger() <= 0) {
+				CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
+				CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
+				GotoGameState(GAME_STATE_OVER);
+			}
+		}
+	}
+
 
 	for (int i = 0; i < 2; i++) {
 		if (trap[i].IsAlive() && trap[i].HitEraser(&eraser)) {
@@ -361,6 +376,25 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		ball[i].OnMove();
 		
 	}
+
+	for (int i = 0; i < NUMBALLS; i++) {
+		temp = 0;
+		for (int j = 0; j < NUMBALLS; j++) {
+			if (j != i) {
+				if (boss[i].HitOthers(&boss[j])) {
+					boss[i].istach();
+					temp = 1;
+					break;
+				}
+			}
+		}
+		if (temp == 0) {
+			boss[i].getxy(eraser.GetX1(), eraser.GetY1());
+		}
+
+		boss[i].OnMove();
+
+	}
 	map.OnMove();
 	orc.OnMove();
 	for (int i = 0; i < 2; i++) {
@@ -372,6 +406,18 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
 	c_practice.LoadBitmap();
 	practice.LoadBitmap("RES\\bitmap3.bmp");
+	boss_blood1.LoadBitmap("Bitmaps/boss_blood1.bmp", RGB(0,0,0));
+	boss_blood2.LoadBitmap("Bitmaps/boss_blood2.bmp", RGB(0, 0, 0));
+	boss_blood3.LoadBitmap("Bitmaps/boss_blood3.bmp", RGB(0, 0, 0));
+	boss_blood4.LoadBitmap("Bitmaps/boss_blood4.bmp", RGB(0, 0, 0));
+	boss_blood5.LoadBitmap("Bitmaps/boss_blood5.bmp", RGB(0, 0, 0));
+	boss_blood6.LoadBitmap("Bitmaps/boss_blood6.bmp", RGB(0, 0, 0));
+	boss_blood7.LoadBitmap("Bitmaps/boss_blood7.bmp", RGB(0, 0, 0));
+	boss_blood8.LoadBitmap("Bitmaps/boss_blood8.bmp", RGB(0, 0, 0));
+	boss_blood9.LoadBitmap("Bitmaps/boss_blood9.bmp", RGB(0, 0, 0));
+	boss_blood10.LoadBitmap("Bitmaps/boss_blood10.bmp", RGB(0, 0, 0));
+	boss_blood11.LoadBitmap("Bitmaps/boss_blood11.bmp", RGB(0, 0, 0));
+	boss_blood12.LoadBitmap("Bitmaps/boss_blood12.bmp", RGB(0, 0, 0));
 	//
 	// 當圖很多時，OnInit載入所有的圖要花很多時間。為避免玩遊戲的人
 	//     等的不耐煩，遊戲會出現「Loading ...」，顯示Loading的進度。
@@ -384,6 +430,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	for (i = 0; i < NUMBALLS; i++) {
 		ball[i].LoadBitmap();
 		trap[i].LoadBitmap();
+		boss[i].LoadBitmap();
 	}
 									// 載入第i個球的圖形
 		
@@ -403,7 +450,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	corner.ShowBitmap(background);							// 將corner貼到background
 	map.LoadBitmap();										// 載入圖形
 	orc.LoadBitmap();
-	hits_left.LoadBitmap();									
+	hits_left.LoadBitmap();	
 	CAudio::Instance()->Load(AUDIO_DING,  "sounds\\ding.wav");	// 載入編號0的聲音ding.wav
 	CAudio::Instance()->Load(AUDIO_LAKE,  "sounds\\lake.mp3");	// 載入編號1的聲音lake.mp3
 	CAudio::Instance()->Load(AUDIO_NTUT,  "sounds\\ntut.mp3");	// 載入編號2的聲音ntut.mid
@@ -419,6 +466,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	const char KEY_UP    = 0x26; // keyboard上箭頭
 	const char KEY_RIGHT = 0x27; // keyboard右箭頭
 	const char KEY_DOWN  = 0x28; // keyboard下箭頭
+	const char ROLL = 0x42;
 	if (nChar == KEY_LEFT)
 		eraser.SetMovingLeft(true);
 	if (nChar == KEY_RIGHT)
@@ -427,6 +475,9 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		eraser.SetMovingUp(true);
 	if (nChar == KEY_DOWN)
 		eraser.SetMovingDown(true);
+	if (nChar == ROLL) {
+		eraser.SetRoll(true);
+	}
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -435,6 +486,7 @@ void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	const char KEY_UP    = 0x26; // keyboard上箭頭
 	const char KEY_RIGHT = 0x27; // keyboard右箭頭
 	const char KEY_DOWN  = 0x28; // keyboard下箭頭
+	const char ROLL = 0x42; //滾
 	if (nChar == KEY_LEFT)
 		eraser.SetMovingLeft(false);
 	if (nChar == KEY_RIGHT)
@@ -443,6 +495,9 @@ void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 		eraser.SetMovingUp(false);
 	if (nChar == KEY_DOWN)
 		eraser.SetMovingDown(false);
+	if (nChar == ROLL) {
+		eraser.SetRoll(false);
+	}
 }
 
 void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // 處理滑鼠的動作
@@ -486,19 +541,61 @@ void CGameStateRun::OnShow()
 	//
 	//c_practice.OnShow();
 	map.OnShow();	// 貼上彈跳的球
-	//orc.OnShow();
-	//background.ShowBitmap();			// 貼上背景圖
-	//help.ShowBitmap();					// 貼上說明圖
+
+	
 	
 
 	for (int i = 0; i < 2; i++) {
 		trap[i].OnShow();				// 貼上第i號球
 	}
 
+	for (int i = 0; i < 1; i++) {
+			boss[i].OnShow();
+		
+						// 貼上第i號球
+	}
+
 	for (int i = 0; i < NUMBALLS; i++) {
 		ball[i].OnShow();				// 貼上第i號球
 	}
 
+	if(boss_blood.GetInteger() == 12){
+		boss_blood1.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 11) {
+		boss_blood2.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 10) {
+		boss_blood3.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 9) {
+		boss_blood4.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 8) {
+		boss_blood5.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 7) {
+		boss_blood6.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 6) {
+		boss_blood7.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 5) {
+		boss_blood8.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 4) {
+		boss_blood9.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 3) {
+		boss_blood10.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 2) {
+		boss_blood11.ShowBitmap();
+	}
+	else if (boss_blood.GetInteger() == 1) {
+		boss_blood12.ShowBitmap();
+	}
+		
 	
 	hits_left.ShowBitmap();
 		

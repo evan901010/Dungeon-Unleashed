@@ -12,7 +12,8 @@ namespace game_framework {
 	public:
 		orc();
 		void LoadBitmap();		// 載入圖形
-		CAnimation run;   //全部地圖
+		CAnimation runr;
+		CAnimation runl;
 		void OnMove();			// 移動
 		void OnShow();			// 將圖形貼到畫面
 	private:
@@ -20,6 +21,7 @@ namespace game_framework {
 		int level;//第幾關
 		int n;//第n張背景
 		int map[3][3];
+		int isrun;
 		CAnimation animation;	// 利用動畫作圖形
 	};
 }
