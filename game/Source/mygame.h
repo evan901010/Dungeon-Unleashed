@@ -44,6 +44,7 @@
 #include "orc.h"
 #include "trap.h"
 #include "Boss.h"
+#include "Chest.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -54,7 +55,8 @@ namespace game_framework {
 		AUDIO_DING,				// 0
 		AUDIO_LAKE,				// 1
 		AUDIO_NTUT,			// 2
-		AUDIO_SWORD_HIT		//3
+		AUDIO_SWORD_HIT,		//3
+		AUDIO_CHEST             //4
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -124,6 +126,7 @@ namespace game_framework {
 		CInteger		hits_left;	// 剩下的撞擊數
 		CInteger        boss_blood ;
 		Trap *trap;
+		Chest *chest;
 		CGamemap   map;		// 反覆彈跳的球
 		orc orc;
 		Boss *boss;

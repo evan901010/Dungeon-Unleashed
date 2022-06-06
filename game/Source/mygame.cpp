@@ -163,6 +163,7 @@ CGameStateRun::CGameStateRun(CGame *g)
 	ball = new CBall [NUMBALLS];
 	trap = new Trap[NUMBALLS];
 	boss = new Boss[NUMBALLS];
+	chest = new Chest[NUMBALLS];
 }
 
 CGameStateRun::~CGameStateRun()
@@ -170,6 +171,7 @@ CGameStateRun::~CGameStateRun()
 	delete [] ball;
 	delete[] trap;
 	delete[] boss;
+	delete[] chest;
 }
 
 void CGameStateRun::OnBeginState()
@@ -211,12 +213,25 @@ void CGameStateRun::OnBeginState()
 	const int TRAP_Y_OFFSET = 214;
 	const int TRAP_PER_ROW = 3;
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0 ; i < 2 ; i++) {
 		int x_pos = i % TRAP_PER_ROW;
 		int y_pos = i / TRAP_PER_ROW;
 		trap[i].SetXY(x_pos * TRAP_GAP + TRAP_X_OFFSET, y_pos * TRAP_GAP + TRAP_Y_OFFSET);
 		trap[i].SetDelay(x_pos);
 		trap[i].SetIsAlive(true);
+	}
+
+	const int CHEST_GAP = 192;
+	const int CHEST_X_OFFSET = 492;
+	const int CHEST_Y_OFFSET = 110;
+	const int CHEST_PER_ROW = 3;
+
+	for (int i = 0; i < 1; i++) {
+		int x_pos = i % CHEST_PER_ROW;
+		int y_pos = i / CHEST_PER_ROW;
+		chest[i].SetXY(x_pos * CHEST_GAP + CHEST_X_OFFSET, y_pos *CHEST_GAP + CHEST_Y_OFFSET);
+		chest[i].SetDelay(x_pos);
+		chest[i].SetIsAlive(true);
 	}
 
 
@@ -353,6 +368,26 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			}
 		}
 	}
+
+	for (int i = 0; i < 1; i++) {
+		if (chest[i].IsAlive() && chest[i].HitEraser(&eraser)) {
+			chest[i].SetIsAlive(false);
+			CAudio::Instance()->Play(AUDIO_CHEST);
+			hits_left.Add(+1);
+			if (hits_left.GetInteger() > 3) {
+				hits_left.SetInteger(3);
+			}
+			//
+			// 若剩餘碰撞次數為0，則跳到Game Over狀態
+			//
+			if (hits_left.GetInteger() <= 0) {
+				CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
+				CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
+				GotoGameState(GAME_STATE_OVER);
+			}
+		}
+	}
+
 	sword.SetXY(eraser.GetX1(), eraser.GetY1());
 	
 	//
@@ -400,6 +435,10 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	for (int i = 0; i < 2; i++) {
 		trap[i].OnMove();
 	}
+
+	for (int i = 0; i < 1; i++) {
+		chest[i].OnMove();
+	}
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
@@ -431,6 +470,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 		ball[i].LoadBitmap();
 		trap[i].LoadBitmap();
 		boss[i].LoadBitmap();
+		chest[i].LoadBitmap();
 	}
 									// 載入第i個球的圖形
 		
@@ -455,6 +495,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	CAudio::Instance()->Load(AUDIO_LAKE,  "sounds\\lake.mp3");	// 載入編號1的聲音lake.mp3
 	CAudio::Instance()->Load(AUDIO_NTUT,  "sounds\\ntut.mp3");	// 載入編號2的聲音ntut.mid
 	CAudio::Instance()->Load(AUDIO_SWORD_HIT, "sounds\\sword_hit.wav");	// 載入編號2的聲音ntut.mid
+	CAudio::Instance()->Load(AUDIO_CHEST, "sounds\\chest.wav");
 	//
 	// 此OnInit動作會接到CGameStaterOver::OnInit()，所以進度還沒到100%
 	//
@@ -553,6 +594,10 @@ void CGameStateRun::OnShow()
 			boss[i].OnShow();
 		
 						// 貼上第i號球
+	}
+
+	for (int i = 0; i < 1; i++) {
+		chest[i].OnShow();				// 貼上第i號球
 	}
 
 	for (int i = 0; i < NUMBALLS; i++) {
