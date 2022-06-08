@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "Resource.h"
 #include <mmsystem.h>
@@ -159,11 +158,15 @@ void CGameStateOver::OnShow()
 CGameStateRun::CGameStateRun(CGame *g)
 : CGameState(g), NUMBALLS(10)
 {
+	totalenemy = 3;
+	totalboss = 1;
+	totaltrap = 2;
+	totalchest = 1;
 	picX = picY = 0;
-	ball = new CBall [NUMBALLS];
-	trap = new Trap[NUMBALLS];
-	boss = new Boss[NUMBALLS];
-	chest = new Chest[NUMBALLS];
+	ball = new CBall [totalenemy];
+	trap = new Trap[totaltrap];
+	boss = new Boss[totalboss];
+	chest = new Chest[totalchest];
 }
 
 CGameStateRun::~CGameStateRun()
@@ -195,8 +198,8 @@ void CGameStateRun::OnBeginState()
 	const int BOSS_HITS_LEFT = 12;
 	const int BOSS_HITS_LEFT_X = 590;
 	const int BOSS_HITS_LEFT_Y = 0;
-	const int BOSS_X_OFFSET = 300;
-	const int BOSS_Y_OFFSET = 100;
+	const int BOSS_X_OFFSET = 0;
+	const int BOSS_Y_OFFSET = 0;
 	boss_blood.SetInteger(BOSS_HITS_LEFT);
 
 	for (int i = 0; i < 1; i++) {				// 設定球的起始座標
@@ -213,7 +216,7 @@ void CGameStateRun::OnBeginState()
 	const int TRAP_Y_OFFSET = 214;
 	const int TRAP_PER_ROW = 3;
 
-	for (int i = 0 ; i < 2 ; i++) {
+	for (int i = 0; i < 2; i++) {
 		int x_pos = i % TRAP_PER_ROW;
 		int y_pos = i / TRAP_PER_ROW;
 		trap[i].SetXY(x_pos * TRAP_GAP + TRAP_X_OFFSET, y_pos * TRAP_GAP + TRAP_Y_OFFSET);
@@ -245,21 +248,75 @@ void CGameStateRun::OnBeginState()
 	//CAudio::Instance()->Play(AUDIO_DING, false);		// 撥放 WAVE
 	CAudio::Instance()->Play(AUDIO_NTUT, true);			// 撥放 MIDI
 }
+void CGameStateRun::newlevel()
+{
 
+	level++;
+	if (level != 2) {
+		const int BALL_GAP = 90;
+		const int BALL_XY_OFFSET = 45;
+		const int BALL_PER_ROW = 7;
+		enemyconst = 3;
+		ball = new CBall[enemyconst];
+		for (int i = 0; i < enemyconst; i++)
+			ball[i].LoadBitmap();								// 載入第i個球的圖形
+		for (int i = 0; i < enemyconst; i++) {				// 設定球的起始座標
+			int x_pos = i % BALL_PER_ROW;
+			int y_pos = i / BALL_PER_ROW;
+			ball[i].SetXY(x_pos * BALL_GAP + BALL_XY_OFFSET, y_pos * BALL_GAP + BALL_XY_OFFSET);
+			ball[i].SetDelay(x_pos);
+			ball[i].SetIsAlive(true);
+		}
+	}
+
+	eraser.Initialize();
+	sword.Initialize();
+	map.setmap(level);
+	if (level == 2) {
+		CAudio::Instance()->Stop(AUDIO_NTUT);
+		CAudio::Instance()->Play(AUDIO_BOSS_BATTLE);
+		const int BOSS_HITS_LEFT = 12;
+		const int BOSS_HITS_LEFT_X = 590;
+		const int BOSS_HITS_LEFT_Y = 0;
+		const int BOSS_X_OFFSET = 300;
+		const int BOSS_Y_OFFSET = 100;
+		const int BOSS_PER_ROW = 7;
+		const int BOSS_GAP = 7;
+		boss_blood.SetInteger(BOSS_HITS_LEFT);
+
+		for (int i = 0; i < 1; i++) {				// 設定球的起始座標
+			int x_pos = i % BOSS_PER_ROW;
+			int y_pos = i / BOSS_PER_ROW;
+			boss[i].SetXY(x_pos * BOSS_GAP + BOSS_X_OFFSET, y_pos * BOSS_GAP + BOSS_Y_OFFSET);
+			boss[i].SetDelay(x_pos);
+			boss[i].SetIsAlive(true);
+
+		}
+	}
+}
 void CGameStateRun::OnMove()							// 移動遊戲元素
-{	
-	boss_blood1.SetTopLeft(100, 550);
-	boss_blood2.SetTopLeft(100, 550);
-	boss_blood3.SetTopLeft(100, 550);
-	boss_blood4.SetTopLeft(100, 550);
-	boss_blood5.SetTopLeft(100, 550);
-	boss_blood6.SetTopLeft(100, 550);
-	boss_blood7.SetTopLeft(100, 550);
-	boss_blood8.SetTopLeft(100, 550);
-	boss_blood9.SetTopLeft(100, 550);
-	boss_blood10.SetTopLeft(100, 550);
-	boss_blood11.SetTopLeft(100, 550);
-	boss_blood12.SetTopLeft(100, 550);
+{
+	if (enemyconst == 0 && level != 2) {
+		newlevel();
+	}
+	if (boss_blood.GetInteger() <= 0) {
+		GotoGameState(GAME_STATE_OVER);
+	}
+	if (level == 2) {
+		boss_blood1.SetTopLeft(100, 550);
+		boss_blood2.SetTopLeft(100, 550);
+		boss_blood3.SetTopLeft(100, 550);
+		boss_blood4.SetTopLeft(100, 550);
+		boss_blood5.SetTopLeft(100, 550);
+		boss_blood6.SetTopLeft(100, 550);
+		boss_blood7.SetTopLeft(100, 550);
+		boss_blood8.SetTopLeft(100, 550);
+		boss_blood9.SetTopLeft(100, 550);
+		boss_blood10.SetTopLeft(100, 550);
+		boss_blood11.SetTopLeft(100, 550);
+		boss_blood12.SetTopLeft(100, 550);
+	}
+
 
 	c_practice.OnMove();
 	if (picX <= SIZE_Y) {
@@ -297,60 +354,69 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	//
 	// 判斷擦子是否碰到球
 	//
-	for (int i=0; i < NUMBALLS; i++){
-		if (ball[i].IsAlive() && ball[i].HitCSword(&sword)) {
-			ball[i].SetIsAlive(false);
-			CAudio::Instance()->Play(AUDIO_SWORD_HIT);
 
-		}
-		if (ball[i].IsAlive() && ball[i].HitEraser(&eraser)) {
-			ball[i].SetIsAlive(false);
-			CAudio::Instance()->Play(AUDIO_DING);
-			hits_left.Add(-1);
-			//
-			// 若剩餘碰撞次數為0，則跳到Game Over狀態
-			//
-			if (hits_left.GetInteger() <= 0) {
-				CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
-				CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
-				GotoGameState(GAME_STATE_OVER);
+	if (level != 2) {
+		for (int i=0; i < totalenemy; i++){
+			if (ball[i].IsAlive() && ball[i].HitCSword(&sword)) {
+				enemyconst--;
+				ball[i].SetIsAlive(false);
+				CAudio::Instance()->Play(AUDIO_SWORD_HIT);
+
+			}
+			if (ball[i].IsAlive() && ball[i].HitEraser(&eraser)) {
+				enemyconst--;
+				ball[i].SetIsAlive(false);
+				CAudio::Instance()->Play(AUDIO_DING);
+				hits_left.Add(-1);
+				//
+				// 若剩餘碰撞次數為0，則跳到Game Over狀態
+				//
+				if (hits_left.GetInteger() <= 0) {
+					CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
+					CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
+					GotoGameState(GAME_STATE_OVER);
+				}
 			}
 		}
 	}
+
 
 	
 
 	int x_pos = 1;
 	int y_pos = 1;
 					// 指定剩下的撞擊數
-	for (int i = 0; i < 1; i++) {
+	if (level == 2) {
+		for (int i = 0; i < 1; i++) {
 
-		if (boss[i].IsAlive() && boss[i].HitCSword(&sword)) {
-			boss[i].SetIsAlive(true);
-			CAudio::Instance()->Play(AUDIO_SWORD_HIT);
-			boss[i].SetXY(100, 100);
-			boss_blood.Add(-1);
-			if (boss_blood.GetInteger() <= 0) {
-				boss[i].SetIsAlive(false);
+			if (boss[i].IsAlive() && boss[i].HitCSword(&sword)) {
+				boss[i].SetIsAlive(true);
+				CAudio::Instance()->Play(AUDIO_BOSS_HIT);
+				boss[i].SetXY(100, 100);
+				boss_blood.Add(-1);
+				if (boss_blood.GetInteger() <= 0) {
+					boss[i].SetIsAlive(false);
+				}
 			}
-		}
-		if (boss[i].IsAlive() && boss[i].HitEraser(&eraser)) {
-			boss[i].SetIsAlive(true);
-			CAudio::Instance()->Play(AUDIO_DING);
-			hits_left.Add(-1);
-			boss[i].SetXY(100, 100);
+			if (boss[i].IsAlive() && boss[i].HitEraser(&eraser)) {
+				boss[i].SetIsAlive(true);
+				CAudio::Instance()->Play(AUDIO_DING);
+				hits_left.Add(-1);
+				boss[i].SetXY(100, 100);
 			
 			
-			//
-			// 若剩餘碰撞次數為0，則跳到Game Over狀態
-			//
-			if (hits_left.GetInteger() <= 0) {
-				CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
-				CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
-				GotoGameState(GAME_STATE_OVER);
+				//
+				// 若剩餘碰撞次數為0，則跳到Game Over狀態
+				//
+				if (hits_left.GetInteger() <= 0) {
+					CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
+					CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
+					GotoGameState(GAME_STATE_OVER);
+				}
 			}
 		}
 	}
+	
 
 
 	for (int i = 0; i < 2; i++) {
@@ -369,33 +435,35 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 	}
 
-	for (int i = 0; i < 1; i++) {
-		if (chest[i].IsAlive() && chest[i].HitEraser(&eraser)) {
-			chest[i].SetIsAlive(false);
-			CAudio::Instance()->Play(AUDIO_CHEST);
-			hits_left.Add(+1);
-			if (hits_left.GetInteger() > 3) {
-				hits_left.SetInteger(3);
-			}
-			//
-			// 若剩餘碰撞次數為0，則跳到Game Over狀態
-			//
-			if (hits_left.GetInteger() <= 0) {
-				CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
-				CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
-				GotoGameState(GAME_STATE_OVER);
+	if (level == 1 || level == 2) {
+		for (int i = 0; i < 1; i++) {
+			if (chest[i].IsAlive() && chest[i].HitEraser(&eraser)) {
+				chest[i].SetIsAlive(false);
+				CAudio::Instance()->Play(AUDIO_CHEST);
+				hits_left.Add(+1);
+				if (hits_left.GetInteger() > 3) {
+					hits_left.SetInteger(3);
+				}
+				//
+				// 若剩餘碰撞次數為0，則跳到Game Over狀態
+				//
+				if (hits_left.GetInteger() <= 0) {
+					CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
+					CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
+					GotoGameState(GAME_STATE_OVER);
+				}
 			}
 		}
 	}
-
 	sword.SetXY(eraser.GetX1(), eraser.GetY1());
 	
 	//
 	// 移動彈跳的球
 	//
-	for (int i = 0; i < NUMBALLS; i++) {
+
+	for (int i = 0; i < totalenemy; i++) {
 		temp = 0;
-		for (int j = 0; j < NUMBALLS; j++) {
+		for (int j = 0; j < totalenemy; j++) {
 			if (j != i) {
 				if (ball[i].HitOthers(&ball[j])) {
 					ball[i].istach();
@@ -411,31 +479,32 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		ball[i].OnMove();
 		
 	}
-
-	for (int i = 0; i < NUMBALLS; i++) {
-		temp = 0;
-		for (int j = 0; j < NUMBALLS; j++) {
-			if (j != i) {
-				if (boss[i].HitOthers(&boss[j])) {
-					boss[i].istach();
-					temp = 1;
-					break;
+	if (level == 2) {
+		for (int i = 0; i < totalboss; i++) {
+				temp = 0;
+				for (int j = 0; j < totalboss; j++) {
+					if (j != i) {
+						if (boss[i].HitOthers(&boss[j])) {
+							boss[i].istach();
+							temp = 1;
+							break;
+						}
+					}
 				}
-			}
-		}
-		if (temp == 0) {
-			boss[i].getxy(eraser.GetX1(), eraser.GetY1());
-		}
+				if (temp == 0) {
+					boss[i].getxy(eraser.GetX1(), eraser.GetY1());
+				}
 
-		boss[i].OnMove();
+				boss[i].OnMove();
 
+		}
 	}
+	
 	map.OnMove();
 	orc.OnMove();
 	for (int i = 0; i < 2; i++) {
 		trap[i].OnMove();
 	}
-
 	for (int i = 0; i < 1; i++) {
 		chest[i].OnMove();
 	}
@@ -444,6 +513,10 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
 	c_practice.LoadBitmap();
+	level = 0;
+	enemyconst = 3;
+	totalenemy = enemyconst;
+	map.setmap(level);
 	practice.LoadBitmap("RES\\bitmap3.bmp");
 	boss_blood1.LoadBitmap("Bitmaps/boss_blood1.bmp", RGB(0,0,0));
 	boss_blood2.LoadBitmap("Bitmaps/boss_blood2.bmp", RGB(0, 0, 0));
@@ -466,10 +539,16 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	// 開始載入資料
 	//
 	int i;
-	for (i = 0; i < NUMBALLS; i++) {
+	for (i = 0; i < totalenemy; i++) {
 		ball[i].LoadBitmap();
-		trap[i].LoadBitmap();
+	}
+	for (i = 0; i < totalboss; i++) {
 		boss[i].LoadBitmap();
+	}
+	for (i = 0; i < totaltrap; i++) {
+		trap[i].LoadBitmap();
+	}
+	for (i = 0; i < totalchest; i++) {
 		chest[i].LoadBitmap();
 	}
 									// 載入第i個球的圖形
@@ -495,7 +574,10 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	CAudio::Instance()->Load(AUDIO_LAKE,  "sounds\\lake.mp3");	// 載入編號1的聲音lake.mp3
 	CAudio::Instance()->Load(AUDIO_NTUT,  "sounds\\ntut.mp3");	// 載入編號2的聲音ntut.mid
 	CAudio::Instance()->Load(AUDIO_SWORD_HIT, "sounds\\sword_hit.wav");	// 載入編號2的聲音ntut.mid
+	CAudio::Instance()->Load(AUDIO_BOSS_HIT, "sounds\\boss_hit.wav");
+	CAudio::Instance()->Load(AUDIO_BOSS_BATTLE, "sounds\\boss_battle.wav");
 	CAudio::Instance()->Load(AUDIO_CHEST, "sounds\\chest.wav");
+
 	//
 	// 此OnInit動作會接到CGameStaterOver::OnInit()，所以進度還沒到100%
 	//
@@ -589,57 +671,64 @@ void CGameStateRun::OnShow()
 	for (int i = 0; i < 2; i++) {
 		trap[i].OnShow();				// 貼上第i號球
 	}
-
-	for (int i = 0; i < 1; i++) {
-			boss[i].OnShow();
-		
-						// 貼上第i號球
+	if (level == 2) {
+		for (int i = 0; i < 1; i++) {
+				boss[i].OnShow();
+								// 貼上第i號球
+		}
+	}
+	
+	if (level != 2) {
+		for (int i = 0; i < totalenemy; i++) {
+			ball[i].OnShow();				// 貼上第i號球
+		}
 	}
 
-	for (int i = 0; i < 1; i++) {
-		chest[i].OnShow();				// 貼上第i號球
+	if (level == 1 || level == 2) {
+		for (int i = 0; i < 1; i++) {
+			chest[i].OnShow();				// 貼上第i號球
+		}
 	}
 
-	for (int i = 0; i < NUMBALLS; i++) {
-		ball[i].OnShow();				// 貼上第i號球
+	if (level == 2) {
+		if(boss_blood.GetInteger() == 12){
+			boss_blood1.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 11) {
+			boss_blood2.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 10) {
+			boss_blood3.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 9) {
+			boss_blood4.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 8) {
+			boss_blood5.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 7) {
+			boss_blood6.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 6) {
+			boss_blood7.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 5) {
+			boss_blood8.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 4) {
+			boss_blood9.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 3) {
+			boss_blood10.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 2) {
+			boss_blood11.ShowBitmap();
+		}
+		else if (boss_blood.GetInteger() == 1) {
+			boss_blood12.ShowBitmap();
+		}
 	}
 
-	if(boss_blood.GetInteger() == 12){
-		boss_blood1.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 11) {
-		boss_blood2.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 10) {
-		boss_blood3.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 9) {
-		boss_blood4.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 8) {
-		boss_blood5.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 7) {
-		boss_blood6.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 6) {
-		boss_blood7.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 5) {
-		boss_blood8.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 4) {
-		boss_blood9.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 3) {
-		boss_blood10.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 2) {
-		boss_blood11.ShowBitmap();
-	}
-	else if (boss_blood.GetInteger() == 1) {
-		boss_blood12.ShowBitmap();
-	}
 		
 	
 	hits_left.ShowBitmap();

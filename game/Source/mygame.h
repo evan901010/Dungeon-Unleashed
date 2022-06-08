@@ -55,8 +55,10 @@ namespace game_framework {
 		AUDIO_DING,				// 0
 		AUDIO_LAKE,				// 1
 		AUDIO_NTUT,			// 2
-		AUDIO_SWORD_HIT,		//3
-		AUDIO_CHEST             //4
+		AUDIO_SWORD_HIT	,	//3
+		AUDIO_BOSS_HIT,
+		AUDIO_BOSS_BATTLE,
+		AUDIO_CHEST
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -98,6 +100,7 @@ namespace game_framework {
 	public:
 		CGameStateRun(CGame *g);
 		~CGameStateRun();
+		void newlevel();
 		void OnBeginState();							// 設定每次重玩所需的變數
 		void OnInit();  								// 遊戲的初值及圖形設定
 		void OnKeyDown(UINT, UINT, UINT);
@@ -111,7 +114,8 @@ namespace game_framework {
 		void OnMove();									// 移動遊戲元素
 		void OnShow();									// 顯示這個狀態的遊戲畫面
 	private:
-		
+		int enemyconst ,totalenemy, totalboss, totaltrap, totalchest;
+		int level;
 		CPractice c_practice;
 		CMovingBitmap pratice;
 		int picX, picY;
