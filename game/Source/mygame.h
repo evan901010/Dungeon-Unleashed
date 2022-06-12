@@ -45,6 +45,7 @@
 #include "trap.h"
 #include "Boss.h"
 #include "Chest.h"
+#include "Demon.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -79,11 +80,6 @@ namespace game_framework {
 		CMovingBitmap logo;								// csie的logo
 	};
 
-	/////////////////////////////////////////////////////////////////////////////
-	// 這個class為遊戲的遊戲執行物件，主要的遊戲程式都在這裡
-	// 每個Member function的Implementation都要弄懂
-	/////////////////////////////////////////////////////////////////////////////
-
 
 	class CPractice {
 	public:
@@ -114,7 +110,7 @@ namespace game_framework {
 		void OnMove();									// 移動遊戲元素
 		void OnShow();									// 顯示這個狀態的遊戲畫面
 	private:
-		int enemyconst ,totalenemy, totalboss, totaltrap, totalchest;
+		int upkey, downkey, leftkey, rightkey, enemyconst, demonconst, totalenemy, totalboss, totaltrap, totalchest, totaldemon;
 		int level;
 		CPractice c_practice;
 		CMovingBitmap pratice;
@@ -134,6 +130,7 @@ namespace game_framework {
 		CGamemap   map;		// 反覆彈跳的球
 		orc orc;
 		Boss *boss;
+		Demon *demon;
 		CMovingBitmap boss_blood1;
 		CMovingBitmap boss_blood2;
 		CMovingBitmap boss_blood3;
@@ -146,6 +143,21 @@ namespace game_framework {
 		CMovingBitmap boss_blood10;
 		CMovingBitmap boss_blood11;
 		CMovingBitmap boss_blood12;
+		CMovingBitmap background1;
+		CMovingBitmap background2;
+		CMovingBitmap background3;
+		CMovingBitmap direction;
+		CMovingBitmap name1;
+		CMovingBitmap name2;
+		CMovingBitmap name3;
+		CMovingBitmap orc_1;
+		CMovingBitmap orc_2;
+		CMovingBitmap orc_3;
+		CMovingBitmap demon_5;
+		CMovingBitmap demon_4;
+		CMovingBitmap demon_3;
+		CMovingBitmap demon_2;
+		CMovingBitmap demon_1;
 	};
 	
 	/////////////////////////////////////////////////////////////////////////////

@@ -18,16 +18,10 @@ namespace game_framework {
 
 	void CGameStateInit::OnInit()
 	{
-		//
-		// 當圖很多時，OnInit載入所有的圖要花很多時間。為避免玩遊戲的人
-		//     等的不耐煩，遊戲會出現「Loading ...」，顯示Loading的進度。
-		//
-		ShowInitProgress(0);	// 一開始的loading進度為0%
-		//
-		// 開始載入資料
+
 		//
 		logo.LoadBitmap(IDB_BACKGROUND);
-		Sleep(300);				// 放慢，以便看清楚進度，實際遊戲請刪除此Sleep
+					// 放慢，以便看清楚進度，實際遊戲請刪除此Sleep
 		//
 		// 此OnInit動作會接到CGameStaterRun::OnInit()，所以進度還沒到100%
 		//
@@ -73,12 +67,14 @@ void CGameStateInit::OnLButtonDown(UINT nFlags, CPoint point)
 	GotoGameState(GAME_STATE_RUN);		// 切換至GAME_STATE_RUN
 }
 
+
+
 void CGameStateInit::OnShow()
 {
 	//
 	// 貼上logo
 	//
-	logo.SetTopLeft((SIZE_X - logo.Width())/2, SIZE_Y/8);
+	logo.SetTopLeft(0,0);
 	logo.ShowBitmap();
 	//
 	// Demo螢幕字型的使用，不過開發時請盡量避免直接使用字型，改用CMovingBitmap比較好
@@ -89,8 +85,6 @@ void CGameStateInit::OnShow()
 	fp=pDC->SelectObject(&f);					// 選用 font f
 	pDC->SetBkColor(RGB(0,0,0));
 	pDC->SetTextColor(RGB(255,255,0));
-	pDC->TextOut(120,220,"Please click mouse or press SPACE to begin.");
-	pDC->TextOut(5,395,"Press Ctrl-F to switch in between window mode and full screen mode.");
 	if (ENABLE_GAME_PAUSE)
 		pDC->TextOut(5,425,"Press Ctrl-Q to pause the Game.");
 	pDC->TextOut(5,455,"Press Alt-F4 or ESC to Quit.");
@@ -121,19 +115,7 @@ void CGameStateOver::OnBeginState()
 
 void CGameStateOver::OnInit()
 {
-	//
-	// 當圖很多時，OnInit載入所有的圖要花很多時間。為避免玩遊戲的人
-	//     等的不耐煩，遊戲會出現「Loading ...」，顯示Loading的進度。
-	//
-	ShowInitProgress(66);	// 接個前一個狀態的進度，此處進度視為66%
-	//
-	// 開始載入資料
-	//
-	Sleep(300);				// 放慢，以便看清楚進度，實際遊戲請刪除此Sleep
-	//
-	// 最終進度為100%
-	//
-	ShowInitProgress(100);
+
 }
 
 void CGameStateOver::OnShow()
@@ -162,11 +144,16 @@ CGameStateRun::CGameStateRun(CGame *g)
 	totalboss = 1;
 	totaltrap = 2;
 	totalchest = 1;
+	totaldemon = 5;
+	
+	
 	picX = picY = 0;
 	ball = new CBall [totalenemy];
 	trap = new Trap[totaltrap];
 	boss = new Boss[totalboss];
 	chest = new Chest[totalchest];
+	demon = new Demon[totaldemon];
+	
 }
 
 CGameStateRun::~CGameStateRun()
@@ -175,16 +162,17 @@ CGameStateRun::~CGameStateRun()
 	delete[] trap;
 	delete[] boss;
 	delete[] chest;
+	delete[] demon;
 }
 
 void CGameStateRun::OnBeginState()
 {
 	const int BALL_GAP = 70;
-	const int BALL_XY_OFFSET = 70;
+	const int BALL_XY_OFFSET = 150;
 	const int BALL_PER_ROW = 3;
 	const int HITS_LEFT = 3;
 	const int HITS_LEFT_X = 590;
-	const int HITS_LEFT_Y = 0;
+	const int HITS_LEFT_Y = 100;
 	const int BACKGROUND_X = 60;
 	const int ANIMATION_SPEED = 10;
 	for (int i = 0; i < 6; i++) {				// 設定球的起始座標
@@ -195,6 +183,16 @@ void CGameStateRun::OnBeginState()
 		ball[i].SetIsAlive(true);
 
 	}
+
+	for (int i = 0; i < 5; i++) {				// 設定球的起始座標
+		int x_pos = i % BALL_PER_ROW;
+		int y_pos = i / BALL_PER_ROW;
+		demon[i].SetXY(x_pos * BALL_GAP + BALL_XY_OFFSET, y_pos * BALL_GAP + BALL_XY_OFFSET);
+		demon[i].SetDelay(x_pos);
+		demon[i].SetIsAlive(true);
+
+	}
+
 	const int BOSS_HITS_LEFT = 12;
 	const int BOSS_HITS_LEFT_X = 590;
 	const int BOSS_HITS_LEFT_Y = 0;
@@ -237,26 +235,24 @@ void CGameStateRun::OnBeginState()
 		chest[i].SetIsAlive(true);
 	}
 
-
 	eraser.Initialize();
 	sword.Initialize();
-	background.SetTopLeft(BACKGROUND_X,0);				// 設定背景的起始座標
-	help.SetTopLeft(0, SIZE_Y - help.Height());			// 設定說明圖的起始座標
-	hits_left.SetInteger(HITS_LEFT);					// 指定剩下的撞擊數
-	hits_left.SetTopLeft(HITS_LEFT_X,HITS_LEFT_Y);		// 指定剩下撞擊數的座標
-	//CAudio::Instance()->Play(AUDIO_LAKE, true);			// 撥放 WAVE
-	//CAudio::Instance()->Play(AUDIO_DING, false);		// 撥放 WAVE
-	CAudio::Instance()->Play(AUDIO_NTUT, true);			// 撥放 MIDI
+	background.SetTopLeft(BACKGROUND_X,0);				
+	help.SetTopLeft(0, SIZE_Y - help.Height());			
+	hits_left.SetInteger(HITS_LEFT);					
+	hits_left.SetTopLeft(500,500);		
+	CAudio::Instance()->Play(AUDIO_NTUT, true);		
 }
 void CGameStateRun::newlevel()
 {
 
 	level++;
-	if (level != 2) {
+	if (level == 0) {
 		const int BALL_GAP = 90;
 		const int BALL_XY_OFFSET = 45;
 		const int BALL_PER_ROW = 7;
 		enemyconst = 3;
+		demonconst = 5;
 		ball = new CBall[enemyconst];
 		for (int i = 0; i < enemyconst; i++)
 			ball[i].LoadBitmap();								// 載入第i個球的圖形
@@ -266,6 +262,27 @@ void CGameStateRun::newlevel()
 			ball[i].SetXY(x_pos * BALL_GAP + BALL_XY_OFFSET, y_pos * BALL_GAP + BALL_XY_OFFSET);
 			ball[i].SetDelay(x_pos);
 			ball[i].SetIsAlive(true);
+		}
+	}
+
+	eraser.Initialize();
+	sword.Initialize();
+	map.setmap(level);
+
+	if (level == 1) {
+		const int BALL_GAP = 90;
+		const int BALL_XY_OFFSET = 45;
+		const int BALL_PER_ROW = 7;
+		demonconst = 5;
+		demon = new Demon[demonconst];
+		for (int i = 0; i < demonconst; i++)
+			demon[i].LoadBitmap();								// 載入第i個球的圖形
+		for (int i = 0; i < demonconst; i++) {				// 設定球的起始座標
+			int x_pos = i % BALL_PER_ROW;
+			int y_pos = i / BALL_PER_ROW;
+			demon[i].SetXY(x_pos * BALL_GAP + BALL_XY_OFFSET, y_pos * BALL_GAP + BALL_XY_OFFSET);
+			demon[i].SetDelay(x_pos);
+			demon[i].SetIsAlive(true);
 		}
 	}
 
@@ -294,15 +311,22 @@ void CGameStateRun::newlevel()
 		}
 	}
 }
+
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
-	if (enemyconst == 0 && level != 2) {
+	if (enemyconst == 0 && level == 0) {
 		newlevel();
 	}
+	if (demonconst == 0 && level == 1) {
+		newlevel();
+	}
+
 	if (boss_blood.GetInteger() <= 0) {
 		GotoGameState(GAME_STATE_OVER);
 	}
 	if (level == 2) {
+		background3.SetTopLeft(0, 0);
+		name3.SetTopLeft(600, 30);
 		boss_blood1.SetTopLeft(100, 550);
 		boss_blood2.SetTopLeft(100, 550);
 		boss_blood3.SetTopLeft(100, 550);
@@ -317,6 +341,21 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		boss_blood12.SetTopLeft(100, 550);
 	}
 
+	direction.SetTopLeft(600, 220);
+
+	if (level == 0) {
+		background1.SetTopLeft(0, 0);
+		name1.SetTopLeft(600, 30);
+		orc_3.SetTopLeft(650, 80);
+		orc_2.SetTopLeft(650, 80);
+		orc_1.SetTopLeft(650, 80);
+	}
+
+	if (level == 1) {
+		background2.SetTopLeft(0, 0);
+		name2.SetTopLeft(600, 30);
+	}
+
 
 	c_practice.OnMove();
 	if (picX <= SIZE_Y) {
@@ -327,13 +366,6 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		picX = picY = 0;
 	}
 	practice.SetTopLeft(picX, picY);
-	//
-	// 如果希望修改cursor的樣式，則將下面程式的commment取消即可
-	//
-	// SetCursor(AfxGetApp()->LoadCursor(IDC_GAMECURSOR));
-	//
-	// 移動背景圖的座標
-	//
 
 	if (background.Top() > SIZE_Y)
 		background.SetTopLeft(60 ,-background.Height());
@@ -343,10 +375,6 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	//
 	bool temp;
 	
-		
-	//
-	// 移動擦子
-	//
 	eraser.OnMove();
 	sword.Setisstop(eraser.Getstop());
 	sword.OnMove();
@@ -355,7 +383,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	// 判斷擦子是否碰到球
 	//
 
-	if (level != 2) {
+	if (level == 0) {
 		for (int i=0; i < totalenemy; i++){
 			if (ball[i].IsAlive() && ball[i].HitCSword(&sword)) {
 				enemyconst--;
@@ -380,8 +408,30 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 	}
 
+	if (level == 1) {
+		for (int i = 0; i < totaldemon; i++) {
+			if (demon[i].IsAlive() && demon[i].HitCSword(&sword)) {
+				demonconst--;
+				demon[i].SetIsAlive(false);
+				CAudio::Instance()->Play(AUDIO_SWORD_HIT);
 
-	
+			}
+			if (demon[i].IsAlive() && demon[i].HitEraser(&eraser)) {
+				demonconst--;
+				demon[i].SetIsAlive(false);
+				CAudio::Instance()->Play(AUDIO_DING);
+				hits_left.Add(-1);
+				//
+				// 若剩餘碰撞次數為0，則跳到Game Over狀態
+				//
+				if (hits_left.GetInteger() <= 0) {
+					CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
+					CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
+					GotoGameState(GAME_STATE_OVER);
+				}
+			}
+		}
+	}
 
 	int x_pos = 1;
 	int y_pos = 1;
@@ -460,25 +510,48 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	//
 	// 移動彈跳的球
 	//
-
-	for (int i = 0; i < totalenemy; i++) {
-		temp = 0;
-		for (int j = 0; j < totalenemy; j++) {
-			if (j != i) {
-				if (ball[i].HitOthers(&ball[j])) {
-					ball[i].istach();
-					temp = 1;
-					break;
+	if (level == 0) {
+		for (int i = 0; i < totalenemy; i++) {
+			temp = 0;
+			for (int j = 0; j < totalenemy; j++) {
+				if (j != i) {
+					if (ball[i].HitOthers(&ball[j])) {
+						ball[i].istach();
+						temp = 1;
+						break;
+					}
 				}
 			}
+			if (temp == 0) {
+				ball[i].getxy(eraser.GetX1(), eraser.GetY1());
+			}
+
+			ball[i].OnMove();
+
 		}
-		if (temp == 0) {
-			ball[i].getxy(eraser.GetX1(), eraser.GetY1());
-		}
-		
-		ball[i].OnMove();
-		
 	}
+
+	if (level == 1) {
+		for (int i = 0; i < totaldemon; i++) {
+			temp = 0;
+			for (int j = 0; j < totaldemon; j++) {
+				if (j != i) {
+					if (demon[i].HitOthers(&demon[j])) {
+						demon[i].istach();
+						temp = 1;
+						break;
+					}
+				}
+			}
+			if (temp == 0) {
+				demon[i].getxy(eraser.GetX1(), eraser.GetY1());
+			}
+
+			demon[i].OnMove();
+
+		}
+	}
+
 	if (level == 2) {
 		for (int i = 0; i < totalboss; i++) {
 				temp = 0;
@@ -515,10 +588,21 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	c_practice.LoadBitmap();
 	level = 0;
 	enemyconst = 3;
+	demonconst = 5;
 	totalenemy = enemyconst;
 	map.setmap(level);
 	practice.LoadBitmap("RES\\bitmap3.bmp");
-	boss_blood1.LoadBitmap("Bitmaps/boss_blood1.bmp", RGB(0,0,0));
+	direction.LoadBitmap("Bitmaps/direction.bmp", RGB(0, 0, 0));
+	name1.LoadBitmap("Bitmaps/name1.bmp", RGB(0, 0, 0));
+	name2.LoadBitmap("Bitmaps/name2.bmp", RGB(0, 0, 0));
+	name3.LoadBitmap("Bitmaps/name3.bmp", RGB(0, 0, 0));
+	orc_1.LoadBitmap("Bitmaps/orc_1.bmp", RGB(0, 0, 0));
+	orc_2.LoadBitmap("Bitmaps/orc_2.bmp", RGB(0, 0, 0));
+	orc_3.LoadBitmap("Bitmaps/orc_3.bmp", RGB(0, 0, 0));
+	background1.LoadBitmap("Bitmaps/background1.bmp");
+	background2.LoadBitmap("Bitmaps/background2.bmp");
+	background3.LoadBitmap("Bitmaps/background3.bmp");
+	boss_blood1.LoadBitmap("Bitmaps/boss_blood1.bmp", RGB(0, 0, 0));
 	boss_blood2.LoadBitmap("Bitmaps/boss_blood2.bmp", RGB(0, 0, 0));
 	boss_blood3.LoadBitmap("Bitmaps/boss_blood3.bmp", RGB(0, 0, 0));
 	boss_blood4.LoadBitmap("Bitmaps/boss_blood4.bmp", RGB(0, 0, 0));
@@ -530,17 +614,13 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	boss_blood10.LoadBitmap("Bitmaps/boss_blood10.bmp", RGB(0, 0, 0));
 	boss_blood11.LoadBitmap("Bitmaps/boss_blood11.bmp", RGB(0, 0, 0));
 	boss_blood12.LoadBitmap("Bitmaps/boss_blood12.bmp", RGB(0, 0, 0));
-	//
-	// 當圖很多時，OnInit載入所有的圖要花很多時間。為避免玩遊戲的人
-	//     等的不耐煩，遊戲會出現「Loading ...」，顯示Loading的進度。
-	//
-	ShowInitProgress(33);	// 接個前一個狀態的進度，此處進度視為33%
-	//
-	// 開始載入資料
-	//
+
 	int i;
 	for (i = 0; i < totalenemy; i++) {
 		ball[i].LoadBitmap();
+	}
+	for (i = 0; i < totaldemon; i++) {
+		demon[i].LoadBitmap();
 	}
 	for (i = 0; i < totalboss; i++) {
 		boss[i].LoadBitmap();
@@ -556,14 +636,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	eraser.LoadBitmap();
 	sword.LoadBitmap();
 	background.LoadBitmap(IDB_BACKGROUND);					// 載入背景的圖形
-	//
-	// 完成部分Loading動作，提高進度
-	//
-	ShowInitProgress(50);
-	Sleep(300); // 放慢，以便看清楚進度，實際遊戲請刪除此Sleep
-	//
-	// 繼續載入其他資料
-	//
+
 	help.LoadBitmap(IDB_HELP,RGB(255,255,255));				// 載入說明的圖形
 	corner.LoadBitmap(IDB_CORNER);							// 載入角落圖形
 	corner.ShowBitmap(background);							// 將corner貼到background
@@ -589,7 +662,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	const char KEY_UP    = 0x26; // keyboard上箭頭
 	const char KEY_RIGHT = 0x27; // keyboard右箭頭
 	const char KEY_DOWN  = 0x28; // keyboard下箭頭
-	const char ROLL = 0x42;
+	const char ROLL = 0x10;
 	if (nChar == KEY_LEFT)
 		eraser.SetMovingLeft(true);
 	if (nChar == KEY_RIGHT)
@@ -598,6 +671,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		eraser.SetMovingUp(true);
 	if (nChar == KEY_DOWN)
 		eraser.SetMovingDown(true);
+
 	if (nChar == ROLL) {
 		eraser.SetRoll(true);
 	}
@@ -663,24 +737,58 @@ void CGameStateRun::OnShow()
 	//  貼上背景圖、撞擊數、球、擦子、彈跳的球
 	//
 	//c_practice.OnShow();
+	if (level == 0) {
+		background1.ShowBitmap();
+		name1.ShowBitmap();
+		if (enemyconst == 3) {
+			orc_3.ShowBitmap();
+		}
+		else if (enemyconst == 2) {
+			orc_2.ShowBitmap();
+		}
+		else if (enemyconst == 1) {
+			orc_1.ShowBitmap();
+		}
+		
+	}
+
+	if (level == 1) {
+		background2.ShowBitmap();
+		name2.ShowBitmap();
+	}
+
+	if (level == 2) {
+		background3.ShowBitmap();
+		name3.ShowBitmap();
+	}
 	map.OnShow();	// 貼上彈跳的球
 
 	
-	
 
-	for (int i = 0; i < 2; i++) {
-		trap[i].OnShow();				// 貼上第i號球
+	direction.ShowBitmap();
+	if (level != 1) {
+		for (int i = 0; i < 2; i++) {
+			trap[i].OnShow();				// 貼上第i號球
+		}
 	}
+
 	if (level == 2) {
+
 		for (int i = 0; i < 1; i++) {
 				boss[i].OnShow();
 								// 貼上第i號球
 		}
 	}
 	
-	if (level != 2) {
+	if (level == 0) {
 		for (int i = 0; i < totalenemy; i++) {
 			ball[i].OnShow();				// 貼上第i號球
+		}
+	}
+
+	if (level == 1) {
+		for (int i = 0; i < totaldemon; i++) {
+			demon[i].OnShow();				// 貼上第i號球
 		}
 	}
 
