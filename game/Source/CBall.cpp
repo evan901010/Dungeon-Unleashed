@@ -6,12 +6,7 @@
 #include "gamelib.h"
 #include "CEraser.h"
 #include "CBall.h"
-
 namespace game_framework {
-	/////////////////////////////////////////////////////////////////////////////
-	// CBall: Ball class
-	/////////////////////////////////////////////////////////////////////////////
-
 	CBall::CBall()
 	{
 		is_alive = true;
@@ -37,7 +32,6 @@ namespace game_framework {
 	}
 	bool CBall::HitEraser(CEraser *eraser)
 	{
-		// 檢測擦子所構成的矩形是否碰到球
 		return HitRectangle(eraser->GetX1(), eraser->GetY1(),
 			eraser->GetX2(), eraser->GetY2());
 	}
@@ -55,16 +49,12 @@ namespace game_framework {
 			x = 0;
 			y = 0;
 		}
-		int x1 = x + dx;				// 球的左上角x座標
-		int y1 = y + dy;				// 球的左上角y座標
-		int x2 = x1 + runr.Width();	// 球的右下角x座標
-		int y2 = y1 + runr.Height();	// 球的右下角y座標
-									//
-									// 檢測球的矩形與參數矩形是否有交集
-									//
+		int x1 = x + dx;				
+		int y1 = y + dy;			
+		int x2 = x1 + runr.Width();	
+		int y2 = y1 + runr.Height();	
 		return (tx2 >= x1 && tx1 <= x2 && ty2 >= y1 && ty1 <= y2);
 	}
-
 	bool CBall::IsAlive()
 	{
 		return is_alive;
@@ -86,7 +76,6 @@ namespace game_framework {
 			runl.SetTopLeft(x1, y1);
 		}
 		bmp.LoadBitmap(IDB_BALL, RGB(0, 0, 0));			// 載入球的圖形
-		//bmp_center.LoadBitmap(IDB_CENTER, RGB(0, 0, 0));	// 載入球圓心的圖形
 	}
 	void CBall::forward() 
 	{
@@ -131,9 +120,7 @@ namespace game_framework {
 		}
 		else {
 			forward();
-		}
-		
-		
+		}	
 	}
 	void CBall::istach()
 	{
@@ -143,17 +130,14 @@ namespace game_framework {
 	{
 		delay = d;
 	}
-
 	void CBall::SetIsAlive(bool alive)
 	{
 		is_alive = alive;
 	}
-
 	void CBall::SetXY(int nx, int ny)
 	{
 		x = nx; y = ny;
 	}
-
 	void CBall::OnShow()
 	{
 		if (is_alive  /*主角x座標相減和小怪的x座標，若為正，則小怪往右*/) {

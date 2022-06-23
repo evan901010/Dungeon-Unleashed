@@ -61,6 +61,8 @@ namespace game_framework {
 		char *filename2[4] = { ".\\bitmaps\\knight_run01.bmp",".\\bitmaps\\knight_run02.bmp",".\\bitmaps\\knight_run03.bmp",".\\bitmaps\\knight_run04.bmp" };
 		char *filename3[4] = { ".\\bitmaps\\knight_stand1.bmp",".\\bitmaps\\knight_stand2.bmp",".\\bitmaps\\knight_stand3.bmp",".\\bitmaps\\knight_stand4.bmp" };
 		char *filename4[4] = { ".\\bitmaps\\knight_stand01.bmp",".\\bitmaps\\knight_stand02.bmp",".\\bitmaps\\knight_stand03.bmp",".\\bitmaps\\knight_stand04.bmp" };
+		char *filename5[4] = { ".\\bitmaps\\knight_roll01.bmp" ,".\\bitmaps\\knight_roll02.bmp" ,".\\bitmaps\\knight_roll03.bmp" ,".\\bitmaps\\knight_roll04.bmp" };
+		char *filename6[4] = { ".\\bitmaps\\knight_roll1.bmp" ,".\\bitmaps\\knight_roll2.bmp" ,".\\bitmaps\\knight_roll3.bmp" ,".\\bitmaps\\knight_roll4.bmp" };
 		for (int i = 0; i < 4; i++) {
 			runr.AddBitmap(filename[i], RGB(0, 0, 0));
 		}
@@ -72,6 +74,12 @@ namespace game_framework {
 		}
 		for (int i = 0; i < 4; i++) {
 			stopl.AddBitmap(filename4[i], RGB(0, 0, 0));
+		}
+		for (int i = 0; i < 4; i++) {
+			rolll.AddBitmap(filename5[i], RGB(0, 0, 0));
+		}
+		for (int i = 0; i < 4; i++) {
+			rollr.AddBitmap(filename6[i], RGB(0, 0, 0));
 		}
 	}
 
@@ -113,8 +121,26 @@ namespace game_framework {
 			}
 			isrun = isstop;
 		}
-		else if (isRolling) {
-			y = STEP_SIZE + 20;
+		if (isRolling) {
+
+			if (isrun == 1) {
+				if (x < right) {
+					x += STEP_SIZE + 5;
+
+				}					
+				rolll.OnMove();
+				rollr.OnMove();
+			}
+			else if(isrun == 2) {
+				if (x > lift) {
+					x -= STEP_SIZE + 5;
+
+				}
+				rolll.OnMove();
+				rollr.OnMove();
+			}
+			
+			
 		}
 		isrun = isstop;
 
@@ -162,20 +188,31 @@ namespace game_framework {
 		runl.SetTopLeft(x, y);
 		stopr.SetTopLeft(x, y);
 		stopl.SetTopLeft(x, y);
-		if (isrun == 1) {
+		rolll.SetTopLeft(x, y);
+		rollr.SetTopLeft(x, y);
+		if (isRolling) {
+			if (isstop == 1) {
+				rolll.OnShow();
+			}
+			else {
+				rollr.OnShow();
+			}
+		}
+		else if (isrun == 1) {
 			runr.OnShow();
 
 		}
-		if(isrun == 2) {
+		else if(isrun == 2) {
 			runl.OnShow();
 
 		}
-		if(isstop == 1){
+		else if(isstop == 1){
 			stopr.OnShow();
 		}
-		if (isstop == 2) {
+		else if (isstop == 2) {
 			stopl.OnShow();
 		}
+
 		
 	}
 }

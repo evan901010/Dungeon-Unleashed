@@ -8,10 +8,6 @@
 #include "Demon.h"
 
 namespace game_framework {
-	/////////////////////////////////////////////////////////////////////////////
-	// Demon: Ball class
-	/////////////////////////////////////////////////////////////////////////////
-
 	Demon::Demon()
 	{
 		is_alive = true;
@@ -55,16 +51,12 @@ namespace game_framework {
 			x = 0;
 			y = 0;
 		}
-		int x1 = x + dx;				// 球的左上角x座標
-		int y1 = y + dy;				// 球的左上角y座標
-		int x2 = x1 + runr.Width();	// 球的右下角x座標
-		int y2 = y1 + runr.Height();	// 球的右下角y座標
-									//
-									// 檢測球的矩形與參數矩形是否有交集
-									//
+		int x1 = x + dx;				
+		int y1 = y + dy;				
+		int x2 = x1 + runr.Width();	
+		int y2 = y1 + runr.Height();	
 		return (tx2 >= x1 && tx1 <= x2 && ty2 >= y1 && ty1 <= y2);
 	}
-
 	bool Demon::IsAlive()
 	{
 		return is_alive;
@@ -78,15 +70,13 @@ namespace game_framework {
 	{
 		char *filename1[4] = { ".\\bitmaps\\enemy\\demon1.bmp",".\\bitmaps\\enemy\\demon2.bmp",".\\bitmaps\\enemy\\demon3.bmp", ".\\bitmaps\\enemy\\demon4.bmp" };
 		char *filename2[4] = { ".\\bitmaps\\enemy\\orc_run01.bmp",".\\bitmaps\\enemy\\orc_run02.bmp",".\\bitmaps\\enemy\\orc_run03.bmp", ".\\bitmaps\\enemy\\orc_run04.bmp" };
-
-		for (int i = 0; i < 4; i++) {	// 載入動畫(由4張圖形構成)
+		for (int i = 0; i < 4; i++) {	
 			runr.AddBitmap(filename1[i], RGB(0, 0, 0));
 			runr.SetTopLeft(x1, y1);
 			runl.AddBitmap(filename1[i], RGB(0, 0, 0));
 			runl.SetTopLeft(x1, y1);
 		}
-		bmp.LoadBitmap(IDB_BALL, RGB(0, 0, 0));			// 載入球的圖形
-		//bmp_center.LoadBitmap(IDB_CENTER, RGB(0, 0, 0));	// 載入球圓心的圖形
+		bmp.LoadBitmap(IDB_BALL, RGB(0, 0, 0));			
 	}
 	void Demon::forward() 
 	{
@@ -131,9 +121,7 @@ namespace game_framework {
 		}
 		else {
 			forward();
-		}
-		
-		
+		}		
 	}
 	void Demon::istach()
 	{
@@ -143,17 +131,14 @@ namespace game_framework {
 	{
 		delay = d;
 	}
-
 	void Demon::SetIsAlive(bool alive)
 	{
 		is_alive = alive;
 	}
-
 	void Demon::SetXY(int nx, int ny)
 	{
 		x = nx; y = ny;
 	}
-
 	void Demon::OnShow()
 	{
 		if (is_alive  /*主角x座標相減和小怪的x座標，若為正，則小怪往右*/) {

@@ -38,8 +38,8 @@ namespace game_framework {
 
 	void CSword::Initialize()
 	{
-		const int X_POS = 0;
-		const int Y_POS = 0;
+		const int X_POS = 20000;
+		const int Y_POS = 20000;
 		x = X_POS;
 		y = Y_POS;
 		isClick = 0;
@@ -87,8 +87,8 @@ namespace game_framework {
 			}
 		}
 		else {
-			x = 0;
-			y = 0;
+			x = 20000;
+			y = 20000;
 			attackl.SetTopLeft(x, y);
 			attackr.SetTopLeft(x, y);
 		}
@@ -99,8 +99,8 @@ namespace game_framework {
 			n--;
 			if (n == 0) {
 				n = 7;
-				x = 0;
-				y = 0;
+				x = 20000;
+				y = 20000;
 				isClick = 2;
 				
 			}

@@ -516,8 +516,8 @@ void CGame::OnDraw()
 		// 如果在暫停狀態，則顯示Ctrl-Q...
 		//
 		CMovingBitmap bmp;
-		bmp.LoadBitmap(IDB_CONTINUE);
-		bmp.SetTopLeft(0,0);
+		bmp.LoadBitmap(IDB_CONTINUE, RGB(0,0,0));
+		bmp.SetTopLeft(100,75);
 		bmp.ShowBitmap();
 	}
 	CDDraw::BltBackToPrimary();				// 將 Back Plain 貼到螢幕
