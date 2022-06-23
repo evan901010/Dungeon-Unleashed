@@ -480,6 +480,8 @@ void CGameState::OnCycle() // Template Method
 
 CGame CGame::instance;
 
+
+
 CGame::CGame()
 : NUM_GAME_STATES(3)
 {
@@ -490,6 +492,8 @@ CGame::CGame()
 	gameStateTable[GAME_STATE_OVER] = new CGameStateOver(this);
 	gameState = NULL;
 }
+
+ CInteger CGame::hits_left = 3;
 
 CGame::~CGame()
 {

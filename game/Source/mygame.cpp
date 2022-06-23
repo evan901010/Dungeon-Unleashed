@@ -66,7 +66,7 @@ CGameStateOver::CGameStateOver(CGame *g)
 }
 void CGameStateOver::OnMove()
 {
-	
+
 	end_1.SetTopLeft(0, 0);
 	end_2.SetTopLeft(0, 0);
 	end_3.SetTopLeft(0, 0);
@@ -90,9 +90,17 @@ void CGameStateOver::OnBeginState()
 	counter = 30 * 5; // 5 seconds
 	CAudio::Instance()->Stop(AUDIO_NTUT);
 	CAudio::Instance()->Stop(AUDIO_BOSS_BATTLE);
+	if (this->game->hits_left.GetInteger() <= 0) {
+		CAudio::Instance()->Play(AUDIO_DIE);
+	}
+	else {
+		CAudio::Instance()->Play(AUDIO_END);
+	}
 }
 void CGameStateOver::OnInit()
 {
+	CAudio::Instance()->Load(AUDIO_DIE, "sounds\\die.mp3");
+	CAudio::Instance()->Load(AUDIO_END, "sounds\\end.mp3");
 	end_1.LoadBitmap("Bitmaps/end_1.bmp", RGB(0, 0, 0));
 	end_2.LoadBitmap("Bitmaps/end_2.bmp", RGB(0, 0, 0));
 	end_3.LoadBitmap("Bitmaps/end_3.bmp", RGB(0, 0, 0));
@@ -107,7 +115,8 @@ void CGameStateOver::OnInit()
 }
 void CGameStateOver::OnShow()
 {
-	if (hits_left.GetInteger() <= 0) {
+	if (this->game->hits_left.GetInteger() <= 0) {
+		
 		if (counter >= 120) {
 			die_5.ShowBitmap();
 		}
@@ -125,6 +134,7 @@ void CGameStateOver::OnShow()
 		}
 	}
 	else {
+		
 		if (counter >= 120) {
 			end_5.ShowBitmap();
 		}
@@ -141,21 +151,7 @@ void CGameStateOver::OnShow()
 			end_1.ShowBitmap();
 		}
 	}
-
-
-
-	
-	CDC *pDC = CDDraw::GetBackCDC();			
-	CFont f,*fp;
-	f.CreatePointFont(160,"Times New Roman");	
-	fp=pDC->SelectObject(&f);					
-	pDC->SetBkColor(RGB(0,0,0));
-	pDC->SetTextColor(RGB(255,255,0));
-	char str[80];								
-	sprintf(str, "Game Over ! (%d)", pass.GetInteger());
-	pDC->TextOut(240,210,str);
-	pDC->SelectObject(fp);						
-	CDDraw::ReleaseBackCDC();					
+				
 }
 
 
@@ -185,7 +181,6 @@ CGameStateRun::~CGameStateRun()
 }
 void CGameStateRun::OnBeginState()
 {
-	pass.SetInteger(1);
 	const int BALL_GAP = 70;
 	const int BALL_XY_OFFSET = 150;
 	const int BALL_PER_ROW = 3;
@@ -210,7 +205,7 @@ void CGameStateRun::OnBeginState()
 		demon[i].SetIsAlive(true);
 
 	}
-	const int BOSS_HITS_LEFT = 12;
+	const int BOSS_HITS_LEFT = 10;
 	const int BOSS_HITS_LEFT_X = 590;
 	const int BOSS_HITS_LEFT_Y = 0;
 	const int BOSS_X_OFFSET = 0;
@@ -259,8 +254,8 @@ void CGameStateRun::OnBeginState()
 	sword.Initialize();
 	background.SetTopLeft(BACKGROUND_X,0);				
 	help.SetTopLeft(100, SIZE_Y - help.Height());			
-	hits_left.SetInteger(HITS_LEFT);					
-	hits_left.SetTopLeft(300,100);		
+	this->game->hits_left.SetInteger(HITS_LEFT);
+	this->game->hits_left.SetTopLeft(300,100);
 	CAudio::Instance()->Play(AUDIO_NTUT, true);		
 }
 void CGameStateRun::newlevel()
@@ -336,36 +331,39 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		newlevel();
 	}
 	if (boss_blood.GetInteger() <= 0) {
-		pass.SetInteger(1);
 		GotoGameState(GAME_STATE_OVER);
 	}
 	if (level == 2) {
 		background3.SetTopLeft(0, 0);
 		name3.SetTopLeft(600, 30);
-		boss_blood1.SetTopLeft(100, 550);
-		boss_blood2.SetTopLeft(100, 550);
-		boss_blood3.SetTopLeft(100, 550);
-		boss_blood4.SetTopLeft(100, 550);
-		boss_blood5.SetTopLeft(100, 550);
-		boss_blood6.SetTopLeft(100, 550);
-		boss_blood7.SetTopLeft(100, 550);
-		boss_blood8.SetTopLeft(100, 550);
-		boss_blood9.SetTopLeft(100, 550);
-		boss_blood10.SetTopLeft(100, 550);
-		boss_blood11.SetTopLeft(100, 550);
-		boss_blood12.SetTopLeft(100, 550);
+		boss_blood1.SetTopLeft(594, 70);
+		boss_blood2.SetTopLeft(594, 70);
+		boss_blood3.SetTopLeft(594, 70);
+		boss_blood4.SetTopLeft(594, 70);
+		boss_blood5.SetTopLeft(594, 70);
+		boss_blood6.SetTopLeft(594, 70);
+		boss_blood7.SetTopLeft(594, 70);
+		boss_blood8.SetTopLeft(594, 70);
+		boss_blood9.SetTopLeft(594, 70);
+		boss_blood10.SetTopLeft(594, 70);
+
 	}
 	direction.SetTopLeft(600, 220);
 	if (level == 0) {
 		background1.SetTopLeft(0, 0);
 		name1.SetTopLeft(600, 30);
-		orc_3.SetTopLeft(650, 80);
-		orc_2.SetTopLeft(650, 80);
-		orc_1.SetTopLeft(650, 80);
+		orc_3.SetTopLeft(600, 70);
+		orc_2.SetTopLeft(600, 70);
+		orc_1.SetTopLeft(600, 70);
 	}
 	if (level == 1) {
 		background2.SetTopLeft(0, 0);
 		name2.SetTopLeft(600, 30);
+		demon_5.SetTopLeft(600, 70);
+		demon_4.SetTopLeft(600, 70);
+		demon_3.SetTopLeft(600, 70);
+		demon_2.SetTopLeft(600, 70);
+		demon_1.SetTopLeft(600, 70);
 	}
 	c_practice.OnMove();
 	if (picX <= SIZE_Y) {
@@ -394,11 +392,10 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				enemyconst--;
 				ball[i].SetIsAlive(false);
 				CAudio::Instance()->Play(AUDIO_DING);
-				hits_left.Add(-1);
-				if (hits_left.GetInteger() <= 0) {
+				this->game->hits_left.Add(-1);
+				if (this->game->hits_left.GetInteger() <= 0) {
 					CAudio::Instance()->Stop(AUDIO_LAKE);	
 					CAudio::Instance()->Stop(AUDIO_NTUT);
-					pass.SetInteger(0);
 					GotoGameState(GAME_STATE_OVER);
 				}
 			}
@@ -415,11 +412,10 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				demonconst--;
 				demon[i].SetIsAlive(false);
 				CAudio::Instance()->Play(AUDIO_DING);
-				hits_left.Add(-1);
-				if (hits_left.GetInteger() <= 0) {
+				this->game->hits_left.Add(-1);
+				if (this->game->hits_left.GetInteger() <= 0) {
 					CAudio::Instance()->Stop(AUDIO_LAKE);	
 					CAudio::Instance()->Stop(AUDIO_NTUT);	
-					pass.SetInteger(0);
 					GotoGameState(GAME_STATE_OVER);
 				}
 			}
@@ -441,12 +437,11 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			if (boss[i].IsAlive() && boss[i].HitEraser(&eraser)) {
 				boss[i].SetIsAlive(true);
 				CAudio::Instance()->Play(AUDIO_DING);
-				hits_left.Add(-1);
+				this->game->hits_left.Add(-1);
 				boss[i].SetXY(100, 100);
-				if (hits_left.GetInteger() <= 0) {
+				if (this->game->hits_left.GetInteger() <= 0) {
 					CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
 					CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
-					pass.SetInteger(0);
 					GotoGameState(GAME_STATE_OVER);
 				}
 			}
@@ -456,14 +451,13 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		if (trap[i].IsAlive() && trap[i].HitEraser(&eraser)) {
 			trap[i].SetIsAlive(false);
 			CAudio::Instance()->Play(AUDIO_DING);
-			hits_left.Add(-1);
+			this->game->hits_left.Add(-1);
 			//
 			// 若剩餘碰撞次數為0，則跳到Game Over狀態
 			//
-			if (hits_left.GetInteger() <= 0) {
+			if (this->game->hits_left.GetInteger() <= 0) {
 				CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
 				CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
-				pass.SetInteger(0);
 				GotoGameState(GAME_STATE_OVER);
 			}
 		}
@@ -473,14 +467,13 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			if (chest[i].IsAlive() && chest[i].HitEraser(&eraser)) {
 				chest[i].SetIsAlive(false);
 				CAudio::Instance()->Play(AUDIO_CHEST);
-				hits_left.Add(+1);
-				if (hits_left.GetInteger() > 3) {
-					hits_left.SetInteger(3);
+				this->game->hits_left.Add(+1);
+				if (this->game->hits_left.GetInteger() > 3) {
+					this->game->hits_left.SetInteger(3);
 				}
-				if (hits_left.GetInteger() <= 0) {
+				if (this->game->hits_left.GetInteger() <= 0) {
 					CAudio::Instance()->Stop(AUDIO_LAKE);	// 停止 WAVE
 					CAudio::Instance()->Stop(AUDIO_NTUT);	// 停止 MIDI
-					pass.SetInteger(0);
 					GotoGameState(GAME_STATE_OVER);
 				}
 			}
@@ -567,6 +560,11 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	orc_1.LoadBitmap("Bitmaps/orc_1.bmp", RGB(0, 0, 0));
 	orc_2.LoadBitmap("Bitmaps/orc_2.bmp", RGB(0, 0, 0));
 	orc_3.LoadBitmap("Bitmaps/orc_3.bmp", RGB(0, 0, 0));
+	demon_1.LoadBitmap("Bitmaps/demon_1.bmp", RGB(0, 0, 0));
+	demon_2.LoadBitmap("Bitmaps/demon_2.bmp", RGB(0, 0, 0));
+	demon_3.LoadBitmap("Bitmaps/demon_3.bmp", RGB(0, 0, 0));
+	demon_4.LoadBitmap("Bitmaps/demon_4.bmp", RGB(0, 0, 0));
+	demon_5.LoadBitmap("Bitmaps/demon_5.bmp", RGB(0, 0, 0));
 	background1.LoadBitmap("Bitmaps/background1.bmp");
 	background2.LoadBitmap("Bitmaps/background2.bmp");
 	background3.LoadBitmap("Bitmaps/background3.bmp");
@@ -580,8 +578,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	boss_blood8.LoadBitmap("Bitmaps/boss_blood8.bmp", RGB(0, 0, 0));
 	boss_blood9.LoadBitmap("Bitmaps/boss_blood9.bmp", RGB(0, 0, 0));
 	boss_blood10.LoadBitmap("Bitmaps/boss_blood10.bmp", RGB(0, 0, 0));
-	boss_blood11.LoadBitmap("Bitmaps/boss_blood11.bmp", RGB(0, 0, 0));
-	boss_blood12.LoadBitmap("Bitmaps/boss_blood12.bmp", RGB(0, 0, 0));
+
 	int i;
 	for (i = 0; i < totalenemy; i++) {
 		ball[i].LoadBitmap();
@@ -606,7 +603,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	corner.ShowBitmap(background);							
 	map.LoadBitmap();										
 	orc.LoadBitmap();
-	hits_left.LoadBitmap();	
+	this->game->hits_left.LoadBitmap();
 	CAudio::Instance()->Load(AUDIO_DING,  "sounds\\ding.wav");	
 	CAudio::Instance()->Load(AUDIO_LAKE,  "sounds\\lake.mp3");	
 	CAudio::Instance()->Load(AUDIO_NTUT,  "sounds\\ntut.mp3");	
@@ -713,6 +710,22 @@ void CGameStateRun::OnShow()
 	if (level == 1) {
 		background2.ShowBitmap();
 		name2.ShowBitmap();
+		if (demonconst == 5) {
+			demon_5.ShowBitmap();
+		}
+		else if (demonconst == 4) {
+			demon_4.ShowBitmap();
+		}
+		else if (demonconst == 3) {
+			demon_3.ShowBitmap();
+		}
+		else if (demonconst == 2) {
+			demon_2.ShowBitmap();
+		}
+		else if (demonconst == 1) {
+			demon_1.ShowBitmap();
+		}
+
 	}
 	if (level == 2) {
 		background3.ShowBitmap();
@@ -776,14 +789,9 @@ void CGameStateRun::OnShow()
 		else if (boss_blood.GetInteger() == 3) {
 			boss_blood10.ShowBitmap();
 		}
-		else if (boss_blood.GetInteger() == 2) {
-			boss_blood11.ShowBitmap();
-		}
-		else if (boss_blood.GetInteger() == 1) {
-			boss_blood12.ShowBitmap();
-		}
+
 	}
-	hits_left.ShowBitmap();
+	this->game->hits_left.ShowBitmap();
 		
 	sword.OnShow();
 	eraser.OnShow();					
@@ -792,17 +800,7 @@ void CGameStateRun::OnShow()
 	corner.SetTopLeft(SIZE_X-corner.Width(), SIZE_Y-corner.Height());
 	corner.ShowBitmap();
 
-	CDC *pDC = CDDraw::GetBackCDC();
-	CFont f, *fp;
-	f.CreatePointFont(160, "Times New Roman");
-	fp = pDC->SelectObject(&f);
-	pDC->SetBkColor(RGB(0, 0, 0));
-	pDC->SetTextColor(RGB(255, 255, 0));
-	char str[80];
-	sprintf(str, "Game Over ! (%d)", pass.GetInteger());
-	pDC->TextOut(240, 210, str);
-	pDC->SelectObject(fp);
-	CDDraw::ReleaseBackCDC();
+
 
 }
 }

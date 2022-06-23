@@ -287,9 +287,7 @@ public:
 	CGameState(CGame *g);
 	void OnDraw();			// Template Method
 	void OnCycle();			// Template Method
-	CInteger		hits_left;
-	CInteger        boss_blood;
-	CInteger        pass = 1;
+
 	//
 	// virtual functions, 由繼承者提供implementation
 	//
@@ -321,6 +319,7 @@ protected:
 
 class CGame {
 public:
+	static CInteger		   hits_left;
 	CGame();										// Constructor
 	~CGame();										// Destructor
 	bool IsRunning();								// 讀取遊戲是否正在進行中

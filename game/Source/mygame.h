@@ -14,7 +14,9 @@ namespace game_framework {
 		AUDIO_SWORD_HIT	,	
 		AUDIO_BOSS_HIT,
 		AUDIO_BOSS_BATTLE,
-		AUDIO_CHEST
+		AUDIO_CHEST,
+		AUDIO_DIE,
+		AUDIO_END
 	};
 	class CGameStateInit : public CGameState{
 	public:
@@ -103,6 +105,7 @@ namespace game_framework {
 		CMovingBitmap demon_3;
 		CMovingBitmap demon_2;
 		CMovingBitmap demon_1;
+		CInteger boss_blood;
 	};
 	class CGameStateOver : public CGameState{
 	
