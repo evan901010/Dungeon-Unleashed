@@ -264,6 +264,7 @@
     <ClCompile Include="Source\CEraser.cpp" />
     <ClCompile Include="Source\Chest.cpp" />
     <ClCompile Include="Source\CSword.cpp" />
+    <ClCompile Include="Source\Demon.cpp" />
     <ClCompile Include="Source\game.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -306,7 +307,6 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="Source\Trap.cpp" />
-    <ClCompile Include="Source\Zombie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio.h" />
@@ -316,6 +316,7 @@
     <ClInclude Include="Source\CEraser.h" />
     <ClInclude Include="Source\Chest.h" />
     <ClInclude Include="Source\CSword.h" />
+    <ClInclude Include="Source\Demon.h" />
     <ClInclude Include="Source\game.h" />
     <ClInclude Include="Source\gameDoc.h" />
     <ClInclude Include="Source\gameView.h" />
@@ -326,7 +327,6 @@
     <ClInclude Include="Source\gamelib.h" />
     <ClInclude Include="Source\mygame.h" />
     <ClInclude Include="Source\Trap.h" />
-    <ClInclude Include="Source\Zombie.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\game.rc">

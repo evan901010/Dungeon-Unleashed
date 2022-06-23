@@ -144,7 +144,7 @@
     <ClCompile Include="Source\Chest.cpp">
       <Filter>MyGame</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Zombie.cpp">
+    <ClCompile Include="Source\Demon.cpp">
       <Filter>MyGame</Filter>
     </ClCompile>
   </ItemGroup>
@@ -200,7 +200,7 @@
     <ClInclude Include="Source\Chest.h">
       <Filter>MyGame</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Zombie.h">
+    <ClInclude Include="Source\Demon.h">
       <Filter>MyGame</Filter>
     </ClInclude>
   </ItemGroup>
