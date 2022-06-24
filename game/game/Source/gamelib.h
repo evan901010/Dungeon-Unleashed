@@ -66,9 +66,9 @@
 // 定義遊戲可設定的環境與條件
 /////////////////////////////////////////////////////////////////////////////
 
-#define SIZE_X				 800		// 設定遊戲畫面的解析度為640x480
-#define SIZE_Y				 600		// 註：若不使用標準的解析度，則不能切換到全螢幕
-#define OPEN_AS_FULLSCREEN	 true		// 是否以全螢幕方式開啟遊戲
+#define SIZE_X				 640		// 設定遊戲畫面的解析度為640x480
+#define SIZE_Y				 480		// 註：若不使用標準的解析度，則不能切換到全螢幕
+#define OPEN_AS_FULLSCREEN	 false		// 是否以全螢幕方式開啟遊戲
 #define SHOW_LOAD_PROGRESS   true		// 是否顯示loading(OnInit)的進度
 #define DEFAULT_BG_COLOR	 RGB(0,0,0)	// 遊戲畫面預設的背景顏色(黑色)
 #define GAME_CYCLE_TIME		 33		    // 每33ms跑一次Move及Show(每秒30次)
@@ -83,8 +83,7 @@
 enum GAME_STATES {
 	GAME_STATE_INIT,
 	GAME_STATE_RUN,
-	GAME_STATE_OVER,
-	GAME_STATE_Die
+	GAME_STATE_OVER
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -274,8 +273,6 @@ class CGame;
 class CGameStateInit;
 class CGameStateRun;
 class CGameStateOver;
-class CGameStateDie;
-
 
 /////////////////////////////////////////////////////////////////////////////
 // 這個class為遊戲的各種狀態之Base class(是一個abstract class)
@@ -287,7 +284,6 @@ public:
 	CGameState(CGame *g);
 	void OnDraw();			// Template Method
 	void OnCycle();			// Template Method
-
 	//
 	// virtual functions, 由繼承者提供implementation
 	//
@@ -319,7 +315,6 @@ protected:
 
 class CGame {
 public:
-	static CInteger		   hits_left;
 	CGame();										// Constructor
 	~CGame();										// Destructor
 	bool IsRunning();								// 讀取遊戲是否正在進行中
@@ -346,7 +341,7 @@ private:
 	bool            suspended;			// 遊戲是否被suspended
 	const int		NUM_GAME_STATES;	// 遊戲的狀態數(3個狀態)
 	CGameState		*gameState;			// pointer指向目前的遊戲狀態
-	CGameState		*gameStateTable[4];	// 遊戲狀態物件的pointer
+	CGameState		*gameStateTable[3];	// 遊戲狀態物件的pointer
 	static CGame	instance;			// 遊戲唯一的instance
 };
 

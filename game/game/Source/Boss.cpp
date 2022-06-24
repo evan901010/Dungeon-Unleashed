@@ -6,7 +6,12 @@
 #include "gamelib.h"
 #include "CEraser.h"
 #include "Boss.h"
+
 namespace game_framework {
+	/////////////////////////////////////////////////////////////////////////////
+	// Boss: Ball class
+	/////////////////////////////////////////////////////////////////////////////
+
 	Boss::Boss()
 	{
 		is_alive = true;
@@ -31,6 +36,7 @@ namespace game_framework {
 	}
 	bool Boss::HitEraser(CEraser *eraser)
 	{
+		// 檢測擦子所構成的矩形是否碰到球
 		return HitRectangle(eraser->GetX1(), eraser->GetY1(),
 			eraser->GetX2(), eraser->GetY2());
 	}
@@ -48,16 +54,19 @@ namespace game_framework {
 			x = 0;
 			y = 0;
 		}
-		int x1 = x + dx;			
-		int y1 = y + dy;				
-		int x2 = x1 + run.Width();	
-		int y2 = y1 + run.Height();	
+		int x1 = x + dx;				// 球的左上角x座標
+		int y1 = y + dy;				// 球的左上角y座標
+		int x2 = x1 + run.Width();	// 球的右下角x座標
+		int y2 = y1 + run.Height();	// 球的右下角y座標
+
 		return (tx2 >= x1 && tx1 <= x2 && ty2 >= y1 && ty1 <= y2);
 	}
+
 	bool Boss::IsAlive()
 	{
 		return is_alive;
 	}
+
 	void Boss::getxy(int x2, int y2)
 	{
 		inx = x - x2;
@@ -74,6 +83,7 @@ namespace game_framework {
 			attack.SetTopLeft(x1, y1);
 		}
 		bmp.LoadBitmap(IDB_BALL, RGB(0, 0, 0));			// 載入球的圖形
+		//bmp_center.LoadBitmap(IDB_CENTER, RGB(0, 0, 0));	// 載入球圓心的圖形
 	}
 	void Boss::forward()
 	{
@@ -119,6 +129,8 @@ namespace game_framework {
 		else {
 			forward();
 		}
+
+
 	}
 	void Boss::istach()
 	{
@@ -128,14 +140,17 @@ namespace game_framework {
 	{
 		delay = d;
 	}
+
 	void Boss::SetIsAlive(bool alive)
 	{
 		is_alive = alive;
 	}
+
 	void Boss::SetXY(int nx, int ny)
 	{
 		x = nx; y = ny;
 	}
+
 	void Boss::OnShow()
 	{
 		if (is_alive) {

@@ -126,6 +126,7 @@ IDB_BITMAP8             BITMAP                  "..\\res\\bmp00003.bmp"
 
 map2_1                  BITMAP                  "..\\res\\bitmap10.bmp"
 
+IDB_BITMAP9             BITMAP                  "..\\res\\bmp00004.bmp"
 
 map2_2                  BITMAP                  "..\\res\\bitmap11.bmp"
 

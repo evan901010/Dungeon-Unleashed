@@ -29,8 +29,6 @@ namespace game_framework {
 		CAnimation stopl;
 		CAnimation swordr;
 		CAnimation swordl;
-		CAnimation rolll;
-		CAnimation rollr;
 		int x, y;					// 擦子左上角座標
 		bool isMovingDown;			// 是否正在往下移動
 		bool isMovingLeft;			// 是否正在往左移動

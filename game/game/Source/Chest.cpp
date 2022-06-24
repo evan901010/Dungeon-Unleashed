@@ -6,7 +6,12 @@
 #include "gamelib.h"
 #include "CEraser.h"
 #include "Chest.h"
+
 namespace game_framework {
+	/////////////////////////////////////////////////////////////////////////////
+	// Chest: Ball class
+	/////////////////////////////////////////////////////////////////////////////
+
 	Chest::Chest()
 	{
 		is_alive = true;
@@ -31,6 +36,7 @@ namespace game_framework {
 	}
 	bool Chest::HitEraser(CEraser *eraser)
 	{
+		// 檢測擦子所構成的矩形是否碰到球
 		return HitRectangle(eraser->GetX1(), eraser->GetY1(),
 			eraser->GetX2(), eraser->GetY2());
 	}
@@ -52,8 +58,12 @@ namespace game_framework {
 		int y1 = y + dy;				// 球的左上角y座標
 		int x2 = x1 + run.Width();	// 球的右下角x座標
 		int y2 = y1 + run.Height();	// 球的右下角y座標
+									//
+									// 檢測球的矩形與參數矩形是否有交集
+									//
 		return (tx2 >= x1 && tx1 <= x2 && ty2 >= y1 && ty1 <= y2);
 	}
+
 	bool Chest::IsAlive()
 	{
 		return is_alive;
@@ -117,6 +127,8 @@ namespace game_framework {
 		else {
 			forward();
 		}
+
+
 	}
 	void Chest::istach()
 	{
@@ -126,14 +138,17 @@ namespace game_framework {
 	{
 		delay = d;
 	}
+
 	void Chest::SetIsAlive(bool alive)
 	{
 		is_alive = alive;
 	}
+
 	void Chest::SetXY(int nx, int ny)
 	{
 		x = nx; y = ny;
 	}
+
 	void Chest::OnShow()
 	{
 		if (is_alive) {

@@ -287,7 +287,7 @@ void CInteger::ShowBitmap()
 	GAME_ASSERT(isBmpLoaded, "CInteger: 請先執行LoadBitmap，然後才能ShowBitmap");
 
 
-	digit[n].SetTopLeft(x, y);
+	digit[n].SetTopLeft(0, y);
 	digit[n].ShowBitmap();
 
 	
@@ -480,8 +480,6 @@ void CGameState::OnCycle() // Template Method
 
 CGame CGame::instance;
 
-
-
 CGame::CGame()
 : NUM_GAME_STATES(3)
 {
@@ -492,8 +490,6 @@ CGame::CGame()
 	gameStateTable[GAME_STATE_OVER] = new CGameStateOver(this);
 	gameState = NULL;
 }
-
- CInteger CGame::hits_left = 3;
 
 CGame::~CGame()
 {
@@ -520,8 +516,8 @@ void CGame::OnDraw()
 		// 如果在暫停狀態，則顯示Ctrl-Q...
 		//
 		CMovingBitmap bmp;
-		bmp.LoadBitmap(IDB_CONTINUE, RGB(0,0,0));
-		bmp.SetTopLeft(100,75);
+		bmp.LoadBitmap(IDB_CONTINUE);
+		bmp.SetTopLeft(0,0);
 		bmp.ShowBitmap();
 	}
 	CDDraw::BltBackToPrimary();				// 將 Back Plain 貼到螢幕

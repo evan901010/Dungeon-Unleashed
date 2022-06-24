@@ -6,7 +6,12 @@
 #include "gamelib.h"
 #include "CEraser.h"
 #include "Trap.h"
+
 namespace game_framework {
+	/////////////////////////////////////////////////////////////////////////////
+	// Trap: Ball class
+	/////////////////////////////////////////////////////////////////////////////
+
 	Trap::Trap()
 	{
 		is_alive = true;
@@ -49,12 +54,16 @@ namespace game_framework {
 			x = 0;
 			y = 0;
 		}
-		int x1 = x + dx;				
-		int y1 = y + dy;				
-		int x2 = x1 + run.Width();	
-		int y2 = y1 + run.Height();
+		int x1 = x + dx;				// 球的左上角x座標
+		int y1 = y + dy;				// 球的左上角y座標
+		int x2 = x1 + run.Width();	// 球的右下角x座標
+		int y2 = y1 + run.Height();	// 球的右下角y座標
+									//
+									// 檢測球的矩形與參數矩形是否有交集
+									//
 		return (tx2 >= x1 && tx1 <= x2 && ty2 >= y1 && ty1 <= y2);
 	}
+
 	bool Trap::IsAlive()
 	{
 		return is_alive;
@@ -72,6 +81,8 @@ namespace game_framework {
 			run.AddBitmap(filename1[i], RGB(0, 0, 0));
 			run.SetTopLeft(x1, y1);
 		}
+		//bmp.LoadBitmap(IDB_BALL, RGB(0, 0, 0));			// 載入球的圖形
+		//bmp_center.LoadBitmap(IDB_CENTER, RGB(0, 0, 0));	// 載入球圓心的圖形
 	}
 	void Trap::forward()
 	{
@@ -116,6 +127,8 @@ namespace game_framework {
 		else {
 			forward();
 		}
+
+
 	}
 	void Trap::istach()
 	{
@@ -125,14 +138,17 @@ namespace game_framework {
 	{
 		delay = d;
 	}
+
 	void Trap::SetIsAlive(bool alive)
 	{
 		is_alive = alive;
 	}
+
 	void Trap::SetXY(int nx, int ny)
 	{
 		x = nx; y = ny;
 	}
+
 	void Trap::OnShow()
 	{
 		if (is_alive) {
