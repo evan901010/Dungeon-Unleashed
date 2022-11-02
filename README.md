@@ -17,4 +17,5 @@ S = Move left.
 D = Move right.
 Left click = Swing the sword
 Shift = Roll
+Ctrl + Q = See about
 
