@@ -1,8 +1,8 @@
 # Dungeon Unleashed
 
-This series is about some  **Unreal Engine 5** beginner practice, mainly about pratical using.
+"Dungeon Unleashed" is a 2D adventure game based on the C++ Game Framework developed by Professor Woei-Kae Chen. In the game, the player must kill all monsters in various dungeons to enter the next dungeon, step by step, until the last dungeon and kill BOSS.
 
-For **Game Algorithm** and **Computer Graphic**, please move to !Constructing!
+Players must roll to avoid the monster's attack, and improve their attributes through scene interaction.
 
 
 
