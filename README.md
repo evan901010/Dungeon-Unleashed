@@ -11,11 +11,11 @@ Players must roll to avoid the monster's attack, and improve their attributes th
 
 There are keyboard to control the protagonist.
 
-*W = Move up.
-*A = Move down.
-*S = Move left.
-*D = Move right.
-*Left click = Swing the sword
-*Shift = Roll
-*Ctrl + Q = See about
+* W = Move up.
+* A = Move down.
+* S = Move left.
+* D = Move right.
+* Left click = Swing the sword
+* Shift = Roll
+* Ctrl + Q = See about
 
